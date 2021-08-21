@@ -115,7 +115,7 @@ const getProperty = (userscript, name, defaultValue) => {
  */
 const createPage = (userscripts) => {
     addStyle('table { width: 100% }')
-    addStyle('th,td { border: 1px solid; padding: 0.6em; }')
+    addStyle('th,td { padding: 0.6em; }')
     addStyle('th,td,p,div,span,h1,h2,h3,body { font-family: "Calibri","sans-serif"; }')
 
     createElement('title', { parent: document.head, text: 'Userscripts' });
