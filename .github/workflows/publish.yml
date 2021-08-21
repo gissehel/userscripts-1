@@ -1,0 +1,37 @@
+name: "publish"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Set env vars"
+        run: |
+          echo "GITHUB_SHA_SHORT=$(echo ${GITHUB_SHA} | cut -c1-8)" >> "${GITHUB_ENV}"
+
+      - name: "Create website resources"
+        run: |
+          mkdir -p "dist"
+          echo "{" > "dist/userscripts.json"
+          for script in $(find * | grep -E ".user.js$"); do mkdir -p "dist/$(dirname "${script}")"; cp -f "${script}" "dist/${script}"; echo "\"${script}\":"; content="$(cat "${script}" | grep -ozP '(?s)// ==UserScript==\n\K.*?(?=\n// ==/UserScript==)' 2>/dev/null | perl -ape 's{^// @([^\s+]*)\s*(.*?)$}{  [\"$1\",\"$2\"],}' | tr -d '\0'; echo "")"; echo "["; echo "${content}"; echo "null],"; done >> "dist/userscripts.json"
+          echo "\"\": null}" >> "dist/userscripts.json"
+          cat "dist/userscripts.json" | jq -c "" | perl -ape 's{,null]}{]}g; s/,"":null}/}/g;' > "dist/userscripts.json"
+          cp -f "website/index.html" "website/userscripts.js" "dist/"
+          
+
+      - name: "Deploy to GitHub Pages"
+        if: "success()"
+        uses: "crazy-max/ghaction-github-pages@v2"
+        with:
+          target_branch: "gh-pages"
+          build_dir: "dist"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
