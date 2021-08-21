@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         twitter-image-downloader
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.4.8
+// @version      1.4.9
 // @description  Twitter image/video downloader
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -88,9 +88,10 @@
                             input.onclick = (e) => input.select();
                             // console.log('has-video and no input : input', article, input);
                             let doc = null;
-                            let text = [...article.querySelectorAll('[lang]')][0];
-                            if (text) {
-                                doc = text.parentElement;
+                            try {
+                                doc = article.querySelectorAll('[role=link]')[0].parentElement.parentElement.parentElement.parentElement.nextElementSibling.children[0].children[0];
+                            } catch {
+
                             }
                             debugItem.doc = doc;
                             debugItem.isList = isTop;
