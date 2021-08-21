@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         twitter-image-downloader
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.4.7
+// @version      1.4.8
 // @description  Twitter image/video downloader
 // @author       gissehel
+// @homepage     https://github.com/gissehel/userscripts
+// @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://twitter.com/*
 // @grant        none
 // ==/UserScript==

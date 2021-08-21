@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         twittervideodownloader-easy
 // @namespace    http://tampermonkey.net/
-// @version      1.2.4
+// @version      1.2.5
 // @description  twittervideodownloader.com easy
 // @author       gissehel
+// @homepage     https://github.com/gissehel/userscripts
+// @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        http://twittervideodownloader.com/*
 // @match        https://twittervideodownloader.com/*
 // @grant        none
