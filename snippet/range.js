@@ -1,3 +1,10 @@
+/**
+ * Create a generator to simulate a range of numbers
+ * @param {number} start The first value of the range
+ * @param {number?} stop The stop value of the range (if any)
+ * @param {number?} step The step to use (if any)
+ * @returns 
+ */
 const range = function* (start, stop, step) {
     let cond = null;
     if (stop === undefined) {
