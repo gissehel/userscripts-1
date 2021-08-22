@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         twitter-image-downloader
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.4.9
+// @version      1.4.10
 // @description  Twitter image/video downloader
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -89,7 +89,7 @@
                             // console.log('has-video and no input : input', article, input);
                             let doc = null;
                             try {
-                                doc = article.querySelectorAll('[role=link]')[0].parentElement.parentElement.parentElement.parentElement.nextElementSibling.children[0].children[0];
+                                doc = article.querySelectorAll('[aria-labelledby]')[0];
                             } catch {
 
                             }
