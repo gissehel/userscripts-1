@@ -125,7 +125,7 @@ const getProperty = (userscript, name, defaultValue) => {
  * @param {{[path: string]: {[property: string]:string}[]}} userscripts 
  * @param {string} version
  */
-const createPage = (userscripts) => {
+const createPage = (userscripts, version) => {
     addStyle('table { width: 100% }')
     addStyle('th,td { padding: 0.6em; }')
     addStyle('th,td,p,div,span,h1,h2,h3,body { font-family: "Calibri","sans-serif"; }')
