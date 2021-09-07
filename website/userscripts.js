@@ -129,9 +129,14 @@ const createPage = (userscripts, version) => {
     addStyle('table { width: 100% }')
     addStyle('th,td { padding: 0.6em; }')
     addStyle('th,td,p,div,span,h1,h2,h3,body { font-family: "Calibri","sans-serif"; }')
+    addStyle('.version { font-size: 0.5em }')
 
     createElement('title', { parent: document.head, text: 'Userscripts' });
-    createElement('h1', { parent: document.body, text: `Userscripts (Version: ${version})` });
+    createElement('h1', {
+        parent: document.body, text: `Userscripts`, children: [
+            createElement('span', { text: `(Version: ${version})` })
+        ]
+    });
     createElement('table', {
         parent: document.body,
         children: [
