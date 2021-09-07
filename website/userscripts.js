@@ -133,8 +133,8 @@ const createPage = (userscripts, version) => {
 
     createElement('title', { parent: document.head, text: 'Userscripts' });
     createElement('h1', {
-        parent: document.body, text: `Userscripts`, children: [
-            createElement('span', { text: `(Version: ${version})` })
+        parent: document.body, text: `Userscripts `, children: [
+            createElement('span', { text: `(Version: ${version})`, classNames: ['version'] })
         ]
     });
     createElement('table', {
