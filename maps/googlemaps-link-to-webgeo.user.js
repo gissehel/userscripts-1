@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.1
+// @version      1.0.2
 // @description  googlemaps-link-to-webgeo
 // @author       none
 // @homepage     https://github.com/gissehel/userscripts
@@ -81,8 +81,8 @@
         return false;
     }
 
-    addStyle('.webgeo { background-color: #fff; border-radius: 50px; padding: 9px !important; border: 1px solid #ccc; }')
-    addStyle('.webgeo:hover { ; }')
+    addStyle('.webgeo { background-color: #fff; border-radius: 50px; padding: 9px !important; border: 1px solid #ccc; font-weight: bold; color: }')
+    addStyle('.webgeo:hover { text-decoration: none; border: 1px solid #888; }')
     el.addEventListener('DOMNodeInserted', ondomchanged, false);
     link.addEventListener('click', onGoToWebgeo, false);
     ondomchanged();
