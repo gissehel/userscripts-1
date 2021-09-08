@@ -12,6 +12,37 @@
 (() => {
     'use strict';
     console.log('googlemaps-link-to-webgeo start');
+
+    /**
+     * Add a new css string to the page
+     * 
+     * @param {string} styleText The CSS string to pass
+     * @returns {void}
+     */
+    const addStyle = (() => {
+        let styleElement = null;
+        let styleContent = null;
+
+        /**
+         * Add a new css string to the page
+         * 
+         * @param {string} styleText The CSS string to pass
+         * @returns {void}
+         */
+        return (styleText) => {
+            if (styleElement === null) {
+                styleElement = document.createElement('style');
+                styleContent = "";
+                document.head.appendChild(styleElement);
+            } else {
+                styleContent += "\n";
+            }
+
+            styleContent += styleText;
+            styleElement.textContent = styleContent;
+        };
+    })();
+
     let allowChanges = true;
     let el = document.documentElement;
     const link = document.createElement('a');
@@ -30,7 +61,7 @@
                 const firstLink = subpanel.children[0];
                 if (firstLink) {
                     const className = firstLink.className;
-                    link.className = className;
+                    link.className = `${className} webgeo`;
                     subpanel.insertBefore(link, firstLink);
 
                     return ;
@@ -50,10 +81,11 @@
         return false;
     }
 
+    addStyle('.webgeo { background-color: #fff; border-radius: 50px; padding: 9px !important; border: 1px solid #ccc; }')
+    addStyle('.webgeo:hover { ; }')
     el.addEventListener('DOMNodeInserted', ondomchanged, false);
     link.addEventListener('click', onGoToWebgeo, false);
     ondomchanged();
 
     console.log('googlemaps-link-to-webgeo installed');
 })();
-
