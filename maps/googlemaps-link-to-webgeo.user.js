@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.0
+// @version      1.0.1
 // @description  googlemaps-link-to-webgeo
 // @author       none
 // @homepage     https://github.com/gissehel/userscripts
