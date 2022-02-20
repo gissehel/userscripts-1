@@ -87,19 +87,28 @@ const createElement = (name, { parent, classNames, text, children, properties, o
         parent.appendChild(element);
     }
     if (classNames) {
-        classNames.forEach(className => element.classList.add(className))
+        classNames.forEach((className) => element.classList.add(className))
     }
     if (text) {
         element.textContent = text;
     }
+    const appendChild = (child) => {
+        if (child) {
+            if (child instanceof Array) {
+                child.forEach((c) => appendChild(c))
+            } else if (child instanceof HTMLElement) {
+                element.appendChild(child)
+            }
+        }
+    }
     if (children) {
-        children.forEach(child => element.appendChild(child));
+        appendChild(children)
+    }
+    if (properties) {
+        Object.keys(properties).forEach((property) => element.setAttribute(property, properties[property]))
     }
     if (onCreated) {
         onCreated(element);
-    }
-    if (properties) {
-        Object.keys(properties).forEach((property) => element[property] = properties[property])
     }
     return element;
 }
@@ -136,43 +145,54 @@ const createPage = (userscripts, version) => {
         { sectionName: 'Userstyles', column: 'Style name', filterType: 'style' },
     ]
 
-
     createElement('title', { parent: document.head, text: 'Userscripts' });
 
-    sectionInfos.forEach((sectionInfo) => {
-        const { sectionName, column, filterType } = sectionInfo;
+    createElement('table', {
+        parent: document.body,
+        children: [
+            ...sectionInfos.map((sectionInfo) => {
+                const { sectionName, column, filterType } = sectionInfo;
 
-        const paths = Object.keys(userscripts).filter((path) => userscripts[path].filter((kv) => kv[0] === 'type')[0][1] === filterType)
+                const paths = Object.keys(userscripts).filter((path) => userscripts[path].filter((kv) => kv[0] === 'type')[0][1] === filterType)
 
-        createElement('h1', {
-            parent: document.body,
-            text: `${sectionName} `, children: [
-                createElement('span', { text: `(Version: ${version})`, classNames: ['version'] })
-            ]
-        });
-        createElement('table', {
-            parent: document.body,
-            children: [
-                createElement('tr', {
-                    children: [
-                        createElement('th', { text: column }),
-                        createElement('th', { text: 'Link' }),
-                        createElement('th', { text: 'version' }),
-                    ]
-                }),
-                ...paths.map((path) => createElement('tr', {
-                    children: [
-                        createElement('td', { text: getProperty(userscripts[path], 'name', '-') }),
-                        createElement('td', {
-                            children: [
-                                createElement('a', { text: path, properties: { href: path } })
-                            ]
-                        }),
-                        createElement('td', { text: getProperty(userscripts[path], 'version', '-') }),
-                    ]
-                }))
-            ]
-        });
+                return [
+                    createElement('tr', {
+                        children: [
+                            createElement('td', {
+                                properties: {
+                                    colSpan: '3'
+                                },
+                                children: [
+                                    createElement('h1', {
+                                        text: `${sectionName} `, children: [
+                                            createElement('span', { text: `(Version: ${version})`, classNames: ['version'] })
+                                        ]
+                                    })
+                                ]
+                            }),
+                        ]
+                    }),
+                    createElement('tr', {
+                        children: [
+                            createElement('th', { text: column }),
+                            createElement('th', { text: 'Link' }),
+                            createElement('th', { text: 'version' }),
+                        ]
+                    }),
+                    ...paths.map((path) => createElement('tr', {
+                        children: [
+                            createElement('td', { text: getProperty(userscripts[path], 'name', '-') }),
+                            createElement('td', {
+                                children: [
+                                    createElement('a', { text: path, properties: { href: path } })
+                                ]
+                            }),
+                            createElement('td', { text: getProperty(userscripts[path], 'version', '-') }),
+                        ]
+                    }))
+                ]
+            }),
+        ]
     });
 }
 
