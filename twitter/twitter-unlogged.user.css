@@ -1,0 +1,16 @@
+/* ==UserStyle==
+@name           Twitter unlogged
+@namespace      https://github.com/gissehel/userscripts
+@version        1.0
+@description    Twitter unlogged
+@author         gissehel
+==/UserStyle== */
+
+@-moz-document domain("twitter.com") {
+  #layers {
+    display: none !important;
+  }
+  html {
+    overflow: auto !important;
+  }
+}

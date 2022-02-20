@@ -131,34 +131,48 @@ const createPage = (userscripts, version) => {
     addStyle('th,td,p,div,span,h1,h2,h3,body { font-family: "Calibri","sans-serif"; }')
     addStyle('.version { font-size: 0.5em }')
 
+    sectionInfos = [
+        { sectionName: 'Userscripts', column: 'Script name', filterType: 'script' },
+        { sectionName: 'Userstyles', column: 'Style name', filterType: 'style' },
+    ]
+
+
     createElement('title', { parent: document.head, text: 'Userscripts' });
-    createElement('h1', {
-        parent: document.body, text: `Userscripts `, children: [
-            createElement('span', { text: `(Version: ${version})`, classNames: ['version'] })
-        ]
-    });
-    createElement('table', {
-        parent: document.body,
-        children: [
-            createElement('tr', {
-                children: [
-                    createElement('th', { text: 'Script name' }),
-                    createElement('th', { text: 'Link' }),
-                    createElement('th', { text: 'version' }),
-                ]
-            }),
-            ...Object.keys(userscripts).map((path) => createElement('tr', {
-                children: [
-                    createElement('td', { text: getProperty(userscripts[path], 'name', '-') }),
-                    createElement('td', {
-                        children: [
-                            createElement('a', { text: path, properties: { href: path } })
-                        ]
-                    }),
-                    createElement('td', { text: getProperty(userscripts[path], 'version', '-') }),
-                ]
-            }))
-        ]
+
+    sectionInfos.forEach((sectionInfo) => {
+        const { sectionName, column, filterType } = sectionInfo;
+
+        const paths = Object.keys(userscripts).filter((path) => userscripts[path].filter((kv) => kv[0] === 'type')[0][1] === filterType)
+
+        createElement('h1', {
+            parent: document.body,
+            text: `${sectionName} `, children: [
+                createElement('span', { text: `(Version: ${version})`, classNames: ['version'] })
+            ]
+        });
+        createElement('table', {
+            parent: document.body,
+            children: [
+                createElement('tr', {
+                    children: [
+                        createElement('th', { text: column }),
+                        createElement('th', { text: 'Link' }),
+                        createElement('th', { text: 'version' }),
+                    ]
+                }),
+                ...paths.map((path) => createElement('tr', {
+                    children: [
+                        createElement('td', { text: getProperty(userscripts[path], 'name', '-') }),
+                        createElement('td', {
+                            children: [
+                                createElement('a', { text: path, properties: { href: path } })
+                            ]
+                        }),
+                        createElement('td', { text: getProperty(userscripts[path], 'version', '-') }),
+                    ]
+                }))
+            ]
+        });
     });
 }
 
