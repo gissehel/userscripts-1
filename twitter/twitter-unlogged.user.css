@@ -7,8 +7,8 @@
 ==/UserStyle== */
 
 @-moz-document domain("twitter.com") {
-  #layers .r-1p0dtai,
-  #layers .r-ipm5af {
+  #layers>.r-1p0dtai,
+  #layers>.r-ipm5af {
     display: none !important;
   }
   html {
