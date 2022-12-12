@@ -1,5 +1,15 @@
 const addOnKey = (() => {
     const normalizeBool = (data) => data ? true : false;
+
+    /**
+     * @typedef {{ code: string, ctrlKey: boolean?, shiftKey: boolean?, altKey: boolean?, metaKey: boolean?, isComposing: boolean? }} Key
+     */
+
+    /**
+     * 
+     * @param {Key} e
+     * @returns {string}
+     */
     const getHashFromKey = (e) => {
         const code = e.code;
         let { ctrlKey, shiftKey, altKey, metaKey, isComposing } = e;
@@ -7,17 +17,50 @@ const addOnKey = (() => {
         return `${code};${ctrlKey};${shiftKey};${altKey};${metaKey};${isComposing}`;
     };
 
+    /**
+     * @typedef {"up"|"down"} PhaseName
+     */
+
+    /**
+     * @typedef {{[phaseName:string]: RegisteredKeysForPhase}} RegisteredKeys
+     */
+
+    /**
+     * @typedef {{ list: KeyBindingItem[], byKeys: Object.<string, KeyBindingItem[]>, eventListener: (e:KeyboardEvent) => {} }} RegisteredKeysForPhaseForElement
+     */
+
+    /**
+     * @typedef {{ key: Key, hash: string, element: HTMLElement, phase: PhaseName, action: ()=>{}, remove: ()=>{}?}} KeyBindingItem
+     */
+
+    /**
+     * @typedef {Map<HTMLElement, RegisteredKeysForPhaseForElement>} RegisteredKeysForPhase
+     */
+
+    /**
+     * @typedef {Map<string, string>} RegisteredKeysForPhase
+     */
+
+    /** @type{RegisteredKeys} */
     const registeredKeys = {
         'up': null,
         'down': null,
     };
     window.registeredKeys = registeredKeys;
 
+    /**
+     * @type {Object.<string, PhaseName>}
+     */
     const typeToKeyIndex = {
         'keydown': 'down',
         'keyup': 'up',
     };
 
+    /**
+     * 
+     * @param {HTMLElement} element 
+     * @returns {(e:KeyboardEvent) => {}}
+     */
     const onKeyGenerator = (element) => (e) => {
         let phase = typeToKeyIndex[e.type];
         if (phase) {
@@ -35,6 +78,13 @@ const addOnKey = (() => {
         }
     };
 
+    /**
+     * Remove an element from an array
+     * 
+     * @template{T}
+     * @param {T[]} array 
+     * @param {T} item 
+     */
     const removeElementFromArray = (array, item) => {
         if (array) {
             const index = array.indexOf(item);
@@ -44,6 +94,10 @@ const addOnKey = (() => {
         }
     };
 
+    /**
+     * 
+     * @param {KeyBindingItem} item 
+     */
     const removeOnKey = (item) => {
         const { hash, element, phase } = item;
         const registeredKeysForPhase = registeredKeys[phase];
@@ -60,6 +114,15 @@ const addOnKey = (() => {
         }
     };
 
+    /**
+     * 
+     * @param {Object} param 
+     * @param {()=>{}} param.action
+     * @param {HTMLElement} param.element
+     * @param {Key} param.key
+     * @param {PhaseName} param.phase
+     * @returns 
+     */
     const addOnKey = ({ action, element, key, phase }) => {
         if (!action) {
             return;
@@ -86,6 +149,7 @@ const addOnKey = (() => {
         }
         const registeredKeysForPhaseElement = registeredKeysForPhase.get(element);
         const hash = getHashFromKey(key);
+        /** @type{KeyBindingItem} */
         const item = { key, hash, element, phase, action };
         item.remove = () => removeOnKey(item);
         if (registeredKeysForPhaseElement.list.length === 0) {
