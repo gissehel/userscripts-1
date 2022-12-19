@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         geoportail-link-to-webgeo
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.1
+// @version      1.0.2
 // @description  geoportail-link-to-webgeo
 // @author       none
 // @homepage     https://github.com/gissehel/userscripts
@@ -48,7 +48,7 @@
         if (coords) {
             const text = coords.textContent;
             const [lat, lon] = text.split(',').map((str) => str.replace(' ',''))
-            const osmPosition = `map=${11}/${lat}/${lon}`;
+            const osmPosition = `map=${18}/${lat}/${lon}`;
             realLink.setAttribute('href',`https://webgiss.github.io/webgeo/#${osmPosition}`);
             realLink.click();
             return true;
