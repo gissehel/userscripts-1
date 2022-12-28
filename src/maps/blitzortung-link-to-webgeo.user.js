@@ -17,7 +17,7 @@
     let el = document.documentElement;
     const link = document.createElement('a');
     link.setAttribute('href', '#');
-    link.setAttribute('style', "right: 88px;background-image: url('https://github.com/webgiss/webgeo/raw/master/res/earth-32.png'); ");
+    link.setAttribute('style', 'right: 88px;background-image: url(\'https://github.com/webgiss/webgeo/raw/master/res/earth-32.png\'); ');
     link.classList.add('MenuButtonDiv');
 
     const realLink = document.createElement('a');
