@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
-// @namespace    http://github.com/gissehel/userscripts
+// @namespace    https://github.com/gissehel/userscripts
 // @version      1.0.2
 // @description  blitzortung-link-to-webgeo
 // @author       none
