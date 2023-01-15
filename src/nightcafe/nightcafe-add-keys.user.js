@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        nightcafekeys
+// @name        nightcafe-add-keys
 // @namespace   https://github.com/gissehel/userscripts
 // @match       https://creator.nightcafe.studio/*
 // @grant       none
