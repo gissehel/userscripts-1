@@ -138,3 +138,4 @@ const unregisterLikeOrUnlike = registerKeyStruct({key: 's', altKey: true}, likeO
 const unregisterShadeOrUnshadeLiked = registerKeyStruct({key: 'f', altKey: true}, shadeOrUnshadeLiked);
 
 addStyle('.shadeLiked .isLiked { opacity: 0.3; }')
+addStyle('.css-7s9zfk { display: none !important; } ')
