@@ -72,7 +72,7 @@ const getUserscripts = async () => {
  */
 const getVersion = async () => {
     // return "dev";
-    return await getJson('version.json').version
+    return (await getJson('version.json')).version
 }
 
 /**
