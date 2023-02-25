@@ -5,7 +5,7 @@
 // @grant       none
 // @version     1.0.0
 // @author      none
-// @description Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
+// @description Add buttons for "Hot" and "New" explorer entries
 // ==/UserScript==
 
 /**
