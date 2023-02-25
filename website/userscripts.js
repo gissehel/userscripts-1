@@ -47,15 +47,23 @@ const addStyle = (() => {
 })();
 
 /**
+ * Fetch a json filename content without using cache
+ * 
+ * @param {string} filename The JSON filename
+ * @returns The filename content as a javascript object
+ */
+const getJson = async (filename) => {
+    const response = await fetch(`${filename}?${(new Date()).getTime()}`);
+    return await response.json();
+}
+
+/**
  * Get scripts infos
  * @returns {Promise<{[path: string]: {[property: string]:string}[]}>}
  */
 const getUserscripts = async () => {
-    // const userscripts = { "twitch/twitch-auto-click.user.js": [["name", "twitch-auto-click"], ["namespace", "http://github.com/gissehel/userscripts"], ["version", "1.0.8"], ["description", "twitch-auto-click"], ["author", "gissehel"], ["match", "https://twitch.tv/*"], ["match", "https://www.twitch.tv/*"], ["grant", "none"]], "twitch/twitch-picture-in-picture.user.js": [["name", "twitch-picture-in-picture"], ["namespace", "http://github.com/gissehel/userscripts"], ["version", "1.0.0.8"], ["description", "twitch-picture-in-picture"], ["author", "gissehel"], ["match", "https://twitch.tv/*"], ["match", "https://www.twitch.tv/*"], ["grant", "none"]], "twitter/twitter-image-downloader.user.js": [["name", "twitter-image-downloader"], ["namespace", "http://github.com/gissehel/userscripts"], ["version", "1.4.7"], ["description", "Twitter image/video downloader"], ["author", "gissehel"], ["match", "https://twitter.com/*"], ["grant", "none"]], "twitter/twittervideodownloader-easy.user.js": [["name", "twittervideodownloader-easy"], ["namespace", "http://tampermonkey.net/"], ["version", "1.2.4"], ["description", "twittervideodownloader.com easy"], ["author", "gissehel"], ["match", "http://twittervideodownloader.com/*"], ["match", "https://twittervideodownloader.com/*"], ["grant", "none"]] };
-    const response = await fetch(`userscripts.json?${(new Date()).getTime()}`);
-    const userscripts = await response.json();
-    // console.log(userscripts)
-    return userscripts;
+    // return { "twitch/twitch-auto-click.user.js": [["name", "twitch-auto-click"], ["namespace", "http://github.com/gissehel/userscripts"], ["version", "1.0.8"], ["description", "twitch-auto-click"], ["author", "gissehel"], ["match", "https://twitch.tv/*"], ["match", "https://www.twitch.tv/*"], ["grant", "none"]], "twitch/twitch-picture-in-picture.user.js": [["name", "twitch-picture-in-picture"], ["namespace", "http://github.com/gissehel/userscripts"], ["version", "1.0.0.8"], ["description", "twitch-picture-in-picture"], ["author", "gissehel"], ["match", "https://twitch.tv/*"], ["match", "https://www.twitch.tv/*"], ["grant", "none"]], "twitter/twitter-image-downloader.user.js": [["name", "twitter-image-downloader"], ["namespace", "http://github.com/gissehel/userscripts"], ["version", "1.4.7"], ["description", "Twitter image/video downloader"], ["author", "gissehel"], ["match", "https://twitter.com/*"], ["grant", "none"]], "twitter/twittervideodownloader-easy.user.js": [["name", "twittervideodownloader-easy"], ["namespace", "http://tampermonkey.net/"], ["version", "1.2.4"], ["description", "twittervideodownloader.com easy"], ["author", "gissehel"], ["match", "http://twittervideodownloader.com/*"], ["match", "https://twittervideodownloader.com/*"], ["grant", "none"]] };
+    return  await getJson('userscripts.json')
 }
 
 /**
@@ -63,10 +71,8 @@ const getUserscripts = async () => {
  * @returns {Promise<string>}
  */
 const getVersion = async () => {
-    // const version = "dev";
-    const response = await fetch(`version.json?${(new Date()).getTime()}`);
-    const version = (await response.json()).version;
-    return version;
+    // return "dev";
+    return await getJson('version.json').version
 }
 
 /**
