@@ -5,7 +5,7 @@
 // @grant       none
 // @version     1.0.0
 // @author      none
-// @description Add buttons for "Hot" and "New" explorer entries
+// @description Add buttons for 'Hot' and 'New' explorer entries
 // ==/UserScript==
 
 /**
