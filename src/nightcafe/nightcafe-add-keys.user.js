@@ -3,7 +3,7 @@
 // @namespace   https://github.com/gissehel/userscripts
 // @match       https://creator.nightcafe.studio/*
 // @grant       none
-// @version     1.0.6
+// @version     1.0.7
 // @author      none
 // @description Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
 // ==/UserScript==
@@ -119,7 +119,7 @@ const addStyle = (() => {
  * @param {EventListener} callback 
  * @return {()=>{}} The unregister function
  */
- const registerDomNodeInserted = (callback) => {
+const registerDomNodeInserted = (callback) => {
     let nodeChangeInProgress = false
 
     /** @type{EventListener} */
@@ -148,9 +148,6 @@ const likeOrUnlike = (e) => {
     e.preventDefault()
 }
 
-const zoneHandled = new Set()
-
-
 const onDomChanged = () => {
     const images = [...document.querySelectorAll('.renderIfVisible')]
     for (let image of images) {
@@ -166,22 +163,16 @@ const onDomChanged = () => {
     }
     const spamZones = [...document.querySelectorAll("[href*='https://reddit.com/r/nightcafe']")]
     for (let spamZone of spamZones) {
-        if (!zoneHandled.has(spamZone)) {
-            const zoneToSuppress = spamZone?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement
-            if (zoneToSuppress) {
-                zoneToSuppress.classList.add('hidden-element')
-                zoneHandled.add(spamZone)
-            }
+        const zoneToSuppress = spamZone?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement
+        if (zoneToSuppress && !zoneToSuppress.classList.contains('hidden-element')) {
+            zoneToSuppress.classList.add('hidden-element')
         }
     }
     const loungeZones = [...document.querySelectorAll("[style*='lounge-bg.jpg']")]
     for (let loungeZone of loungeZones) {
-        if (!zoneHandled.has(loungeZone)) {
-            const zoneToSuppress = loungeZone?.parentElement?.parentElement?.parentElement
-            if (zoneToSuppress) {
-                zoneToSuppress.classList.add('hidden-element')
-                zoneHandled.add(loungeZone)
-            }
+        const zoneToSuppress = loungeZone?.parentElement?.parentElement?.parentElement
+        if (zoneToSuppress && !zoneToSuppress.classList.contains('hidden-element')) {
+            zoneToSuppress.classList.add('hidden-element')
         }
     }
 }
