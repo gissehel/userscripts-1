@@ -8,46 +8,62 @@ const registerKeyStruct = (() => {
         ctrlKey = getNormalizedBool(ctrlKey)
         metaKey = getNormalizedBool(metaKey)
         isComposing = getNormalizedBool(isComposing)
-        if (key) {
-            return { key, altKey, shiftKey, ctrlKey, metaKey, isComposing }
-        } else if (code) {
-            return { code, altKey, shiftKey, ctrlKey, metaKey, isComposing }
-        } else {
-            return null
-        }
+        return { key, code, altKey, shiftKey, ctrlKey, metaKey, isComposing }
     }
 
-    const getKeyStructId = (keyStruct) => {
-        const { key, code, altKey, shiftKey, ctrlKey, metaKey, isComposing } = normalizeKeyStruct(keyStruct)
-        return `${key}-${code}-${altKey}-${shiftKey}-${ctrlKey}-${metaKey}-${isComposing}`
+    const getKeyStructKeyId = (keyStruct) => {
+        const { key, altKey, shiftKey, ctrlKey, metaKey, isComposing } = normalizeKeyStruct(keyStruct)
+        if (key) {
+            return `${key}-undefined-${altKey}-${shiftKey}-${ctrlKey}-${metaKey}-${isComposing}`
+        }
+        return null
+    }
+
+    const getKeyStructCodeId = (keyStruct) => {
+        const { code, altKey, shiftKey, ctrlKey, metaKey, isComposing } = normalizeKeyStruct(keyStruct)
+        if (code) {
+            return `undefined-${code}-${altKey}-${shiftKey}-${ctrlKey}-${metaKey}-${isComposing}`
+        }
+        return null
+    }
+
+    const getKeyStructIds = (keyStruct) => {
+        return [getKeyStructKeyId, getKeyStructCodeId].map((f) => f(keyStruct)).filter((keyStruct) => keyStruct !== null)
     }
 
     const keyBindings = {}
 
-    const registerKeyStruct = (keyStruct, code) => {
-        const keyStructId = getKeyStructId(keyStruct)
-        if (! keyBindings[keyStructId]) {
-            keyBindings[keyStructId] = {
-                keyStruct: normalizeKeyStruct(keyStruct),
-                codes: [],
+    const registerKeyStruct = (keyStruct, action) => {
+        for (let keyStructId of getKeyStructIds(keyStruct)) {
+            if (!keyBindings[keyStructId]) {
+                keyBindings[keyStructId] = {
+                    keyStruct: normalizeKeyStruct(keyStruct),
+                    actions: [],
+                }
             }
-        }
-        keyBindings[keyStructId].codes.push(code)
-        return () => {
-            const index = keyBindings[keyStructId].codes.indexOf(code)
-            if (index >= 0) {
-                keyBindings[keyStructId].codes.splice(index, 1)
+            keyBindings[keyStructId].actions.push(action)
+            return () => {
+                const index = keyBindings[keyStructId].actions.indexOf(action)
+                if (index >= 0) {
+                    keyBindings[keyStructId].actions.splice(index, 1)
+                }
             }
         }
     }
 
     const onKeyDown = (e) => {
-        const keyStructId = getKeyStructId(e)
-        if (keyBindings[keyStructId]) {
-            for(let code of keyBindings[keyStructId].codes) {
-                code({
-                    preventDefault: () => e.preventDefault(),
-                })
+        let handled = false
+        for (let keyStructId of getKeyStructIds(e)) {
+            if (!handled) {
+                if (keyBindings[keyStructId]) {
+                    for (let code of keyBindings[keyStructId].actions) {
+                        code({
+                            preventDefault: () => e.preventDefault(),
+                        })
+                        handled = true
+                        return
+                    }
+                }
             }
         }
     }
