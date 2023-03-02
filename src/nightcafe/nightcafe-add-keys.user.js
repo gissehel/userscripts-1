@@ -164,7 +164,6 @@ const onDomChanged = () => {
             parentElementClassList.remove('isLiked')
         }
     }
-    document.querySelectorAll("[href*='https://reddit.com/r/nightcafe']")[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
     const spamZones = [...document.querySelectorAll("[href*='https://reddit.com/r/nightcafe']")]
     for (let spamZone of spamZones) {
         if (!zoneHandled.has(spamZone)) {
