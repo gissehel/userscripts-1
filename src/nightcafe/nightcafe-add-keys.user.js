@@ -3,7 +3,7 @@
 // @namespace   https://github.com/gissehel/userscripts
 // @match       https://creator.nightcafe.studio/*
 // @grant       none
-// @version     1.0.5
+// @version     1.0.6
 // @author      none
 // @description Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
 // ==/UserScript==
