@@ -3,7 +3,7 @@
 // @namespace   https://github.com/gissehel/userscripts
 // @match       https://creator.nightcafe.studio/*
 // @grant       none
-// @version     1.0.7
+// @version     1.0.8
 // @author      none
 // @description Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
 // ==/UserScript==
@@ -148,6 +148,14 @@ const likeOrUnlike = (e) => {
     e.preventDefault()
 }
 
+const parentsElement = (element, depth) => {
+    let current_element = element
+    for (let index = 0; index < depth; index++) {
+        current_element = current_element?.parentElement
+    }
+    return current_element
+}
+
 const onDomChanged = () => {
     const images = [...document.querySelectorAll('.renderIfVisible')]
     for (let image of images) {
@@ -161,18 +169,13 @@ const onDomChanged = () => {
             parentElementClassList.remove('isLiked')
         }
     }
-    const spamZones = [...document.querySelectorAll("[href*='https://reddit.com/r/nightcafe']")]
-    for (let spamZone of spamZones) {
-        const zoneToSuppress = spamZone?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement
-        if (zoneToSuppress && !zoneToSuppress.classList.contains('hidden-element')) {
-            zoneToSuppress.classList.add('hidden-element')
-        }
-    }
-    const loungeZones = [...document.querySelectorAll("[style*='lounge-bg.jpg']")]
-    for (let loungeZone of loungeZones) {
-        const zoneToSuppress = loungeZone?.parentElement?.parentElement?.parentElement
-        if (zoneToSuppress && !zoneToSuppress.classList.contains('hidden-element')) {
-            zoneToSuppress.classList.add('hidden-element')
+    for (let [pattern, depth] of [["[href*='https://reddit.com/r/nightcafe']", 8], ["[style*='lounge-bg.jpg']", 3], ["[href*='/pricing#pro']", 2]]) {
+        const spamZones = [...document.querySelectorAll(pattern)]
+        for (let spamZone of spamZones) {
+            const zoneToSuppress = parentsElement(spamZone, depth)
+            if (zoneToSuppress && !zoneToSuppress.classList.contains('hidden-element')) {
+                zoneToSuppress.classList.add('hidden-element')
+            }
         }
     }
 }
