@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         export-youtube-video-from-list
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.0
+// @version      1.0.1
 // @description  Export youtube video information in markdown format
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -39,7 +39,7 @@
      * @param {string} styleText The CSS string to pass
      * @returns {void}
      */
-     const addStyle = (() => {
+    const addStyle = (() => {
         let styleElement = null;
         let styleContent = null;
 
@@ -70,7 +70,7 @@
      * @param {EventListener} callback 
      * @return {()=>{}} The unregister function
      */
-     const registerDomNodeInserted = (callback) => {
+    const registerDomNodeInserted = (callback) => {
         let nodeChangeInProgress = false
 
         /** @type{EventListener} */
@@ -102,9 +102,9 @@
     const registerDomNodeInsertedUnique = (elementProvider, callback) => {
         const domNodesHandled = new Set()
 
-        return registerDomNodeInserted(()=>{
+        return registerDomNodeInserted(() => {
             for (let element of elementProvider()) {
-                if (! domNodesHandled.has(element)) {
+                if (!domNodesHandled.has(element)) {
                     domNodesHandled.add(element)
                     const result = callback(element)
                     if (result === false) {
@@ -130,25 +130,106 @@
         await navigator.clipboard.writeText(text)
     }
 
+    /**
+     * Create a new element, and add some properties to it
+     * 
+     * @param {string} name The name of the element to create
+     * @param {object} params The parameters to tweek the new element
+     * @param {object.<string, string>} params.attributes The propeties of the new element
+     * @param {string} params.text The textContent of the new element
+     * @param {HTMLElement[]} params.children The children of the new element
+     * @param {HTMLElement} params.parent The parent of the new element
+     * @param {string[]} params.classnames The classnames of the new element
+     * @param {string} params.id The classnames of the new element
+     * @param {HTMLElement} params.prevSibling The previous sibling of the new element (to insert after)
+     * @param {HTMLElement} params.nextSibling The next sibling of the new element (to insert before)
+     * @param {(element:HTMLElement)=>{}} params.onCreated called when the element is fully created
+     */
+    const createElementExtended = (name, params) => {
+        /** @type{HTMLElement} */
+        const element = document.createElement(name)
+        if (!params) {
+            params = {}
+        }
+        const { attributes, text, children, parent, classnames, id, prevSibling, nextSibling, onCreated } = params
+        if (attributes) {
+            for (let attributeName in attributes) {
+                element.setAttribute(attributeName, attributes[attributeName])
+            }
+        }
+        if (text) {
+            element.textContent = text;
+        }
+        if (children) {
+            for (let child of children) {
+                element.appendChild(child)
+            }
+        }
+        if (parent) {
+            parent.appendChild(element)
+        }
+        if (classnames) {
+            for (let classname of classnames) {
+                element.classList.add(classname)
+            }
+        }
+        if (id) {
+            element.id = id
+        }
+        if (prevSibling) {
+            prevSibling.parentElement.insertBefore(element, prevSibling.nextSibling)
+        }
+        if (nextSibling) {
+            nextSibling.parentElement.insertBefore(element, nextSibling)
+        }
+        if (onCreated) {
+            onCreated(element)
+        }
+        return element
+    }
+
+    /**
+     * Bind an onClick handler an element. Returns uninstall handler
+     * 
+     * @param {HtmlElement} element The element to bind the handler
+     * @param {()=>boolean|undefined} callback The onClick handler
+     * @returns {()=>{}}
+     */
+    const bindOnClick = (element, callback) => {
+        const onClick = (e) => {
+            const result = callback()
+            if (result !== false) {
+                e.preventDefault()
+            }
+        }
+        element.addEventListener('click', onClick, false);
+
+        return () => {
+            element.removeEventListener('click', onClick, false);
+        }
+    }
+
     addStyle('.eyvfl-export-button { width: 60px; height: 30px; position: absolute; bottom: 0px; right: 0px; }')
 
-    registerDomNodeInsertedUnique(()=>getElements('ytd-rich-item-renderer'), (richItemRenderer) => {
-        const button = document.createElement('button')
-    	const videoTitle = getSubElements(richItemRenderer,'[id=video-title]')[0]?.textContent
-    	const videoLink = getSubElements(richItemRenderer,'#video-title-link')[0]?.href
+    registerDomNodeInsertedUnique(() => getElements('ytd-rich-item-renderer'), (richItemRenderer) => {
+        const videoTitle = getSubElements(richItemRenderer, '[id=video-title]')[0]?.textContent
+        const videoLink = getSubElements(richItemRenderer, '#video-title-link')[0]?.href
         if ((videoTitle === undefined) || (videoLink === undefined) || (videoTitle === '') || (videoLink === '')) {
-        	return false
+            return false
         }
-        button.classList.add('eyvfl-export-button')
-        button.textContent='➡️📋'
-        button.addEventListener('click', (e)=>{
-            const markdown = `- TODO ${videoTitle}\n  - {{video ${videoLink}}}`
-            console.log(`Copying [${markdown}]`)
-            copyTextToClipboard(markdown)
-            e.preventDefault()
-        }, false);
 
-        richItemRenderer.appendChild(button)
+        createElementExtended('button', {
+            parent: richItemRenderer,
+            classnames: ['eyvfl-export-button'],
+            text: '➡️📋',
+            onCreated: (button) => {
+                bindOnClick(button, () => {
+                    const markdown = `- TODO ${videoTitle}\n  - {{video ${videoLink}}}`
+                    console.log(`Copying [${markdown}]`)
+                    copyTextToClipboard(markdown)
+                })
+            }
+        })
     })
 
     console.log(`End - ${script_id}`)
