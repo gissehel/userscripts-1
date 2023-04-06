@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         export-youtube-video-from-list
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.1
+// @version      1.0.2
 // @description  Export youtube video information in markdown format
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
+// @match        https://www.youtube.com/*/videos
 // @match        https://youtube.com/*/videos
 // @grant        none
 // ==/UserScript==
