@@ -11,8 +11,11 @@
 // ==/UserScript==
 
 (() => {
-    'use strict';
-    console.log('twitter-image-downloader start');
+    const script_name = GM_info.script.name
+    const script_version = GM_info.script.version
+    const script_id = `${script_name} ${script_version}`
+    console.log(`Begin - ${script_id}`)
+
     let el = document.documentElement;
     let allowChanges = true;
 
@@ -214,7 +217,8 @@
     el.addEventListener('DOMNodeInserted', ondomchanged, false);
     el.addEventListener('keydown', onKeyDown, false);
     ondomchanged();
-    console.log('twitter-image-downloader activated');
-
+    
     window.ondomchanged = ondomchanged;
-})();
+
+    console.log(`End - ${script_id}`)
+})()

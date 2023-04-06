@@ -12,8 +12,10 @@
 // ==/UserScript==
 
 (() => {
-    'use strict';
-    console.log('twittervideodownloader-easy start');
+    const script_name = GM_info.script.name
+    const script_version = GM_info.script.version
+    const script_id = `${script_name} ${script_version}`
+    console.log(`Begin - ${script_id}`)
 
     const input = document.querySelectorAll('input[name=tweet]')[0];
     if (input) {
@@ -55,5 +57,5 @@
         download(url, filename);
     }
 
-    console.log('twittervideodownloader-easy activated');
-})();
+    console.log(`End - ${script_id}`)
+})()
