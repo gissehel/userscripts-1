@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         export-youtube-video-from-list
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.2
+// @version      1.0.3
 // @description  Export youtube video information in markdown format
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -225,6 +225,10 @@
             text: '➡️📋',
             onCreated: (button) => {
                 bindOnClick(button, () => {
+                    // BUGFIX : Those may have changed, get latest values !
+                    const videoTitle = getSubElements(richItemRenderer, '[id=video-title]')[0]?.textContent
+                    const videoLink = getSubElements(richItemRenderer, '#video-title-link')[0]?.href
+
                     const markdown = `- TODO ${videoTitle}\n  - {{video ${videoLink}}}`
                     console.log(`Copying [${markdown}]`)
                     copyTextToClipboard(markdown)
