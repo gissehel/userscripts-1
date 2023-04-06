@@ -41,7 +41,10 @@ const registerDomNodeInsertedUnique = (elementProvider, callback) => {
         for (let element of elementProvider()) {
             if (! domNodesHandled.has(element)) {
                 domNodesHandled.add(element)
-                callback(element)
+                const result = callback(element)
+                if (result === false) {
+                    domNodesHandled.delete(element)
+                }
             }
         }
     })
