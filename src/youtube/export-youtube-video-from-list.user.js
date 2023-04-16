@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         export-youtube-video-from-list
 // @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.3
+// @version      1.0.4
 // @description  Export youtube video information in markdown format
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -12,8 +12,8 @@
 // ==/UserScript==
 
 (() => {
-    const script_name = GM_info.script.name
-    const script_version = GM_info.script.version
+    const script_name = GM_info?.script?.name || 'no-name'
+    const script_version = GM_info?.script?.version || 'no-version'
     const script_id = `${script_name} ${script_version}`
     console.log(`Begin - ${script_id}`)
 
@@ -211,30 +211,43 @@
     }
 
     addStyle('.eyvfl-export-button { width: 60px; height: 30px; position: absolute; bottom: 0px; right: 0px; }')
+    addStyle('.eyvfl-export-button2 { width: 60px; height: 30px; position: absolute; bottom: 0px; right: 70px; }')
+
+    const getVideoTitle = (richItemRenderer) => getSubElements(richItemRenderer, '[id=video-title]')[0]?.textContent
+    const getVideoLink = (richItemRenderer) => getSubElements(richItemRenderer, '#video-title-link')[0]?.href
+
+    let buffer = ''
 
     registerDomNodeInsertedUnique(() => getElements('ytd-rich-item-renderer'), (richItemRenderer) => {
-        const videoTitle = getSubElements(richItemRenderer, '[id=video-title]')[0]?.textContent
-        const videoLink = getSubElements(richItemRenderer, '#video-title-link')[0]?.href
+        const videoTitle = getVideoTitle(richItemRenderer)
+        const videoLink = getVideoLink(richItemRenderer)
         if ((videoTitle === undefined) || (videoLink === undefined) || (videoTitle === '') || (videoLink === '')) {
             return false
         }
 
-        createElementExtended('button', {
+        const buttonCreator = (label, classname, preAction) => createElementExtended('button', {
             parent: richItemRenderer,
-            classnames: ['eyvfl-export-button'],
-            text: '➡️📋',
+            classnames: [classname],
+            text: label,
             onCreated: (button) => {
                 bindOnClick(button, () => {
                     // BUGFIX : Those may have changed, get latest values !
-                    const videoTitle = getSubElements(richItemRenderer, '[id=video-title]')[0]?.textContent
-                    const videoLink = getSubElements(richItemRenderer, '#video-title-link')[0]?.href
-
-                    const markdown = `- TODO ${videoTitle}\n  - {{video ${videoLink}}}`
-                    console.log(`Copying [${markdown}]`)
-                    copyTextToClipboard(markdown)
+                    const videoTitle = getVideoTitle(richItemRenderer)
+                    const videoLink = getVideoLink(richItemRenderer)
+          
+                    if (preAction !== undefined) {
+                        preAction()
+                    }
+                    const markdown = `- TODO ${videoTitle}\n  - {{video ${videoLink}}}\n`
+                    buffer += markdown
+                    console.log(`Copying [${buffer}]`)
+                    copyTextToClipboard(buffer)
                 })
             }
         })
+
+        buttonCreator('➡️📋', 'eyvfl-export-button', () => buffer = '')
+        buttonCreator('➕📋', 'eyvfl-export-button2')
     })
 
     console.log(`End - ${script_id}`)
