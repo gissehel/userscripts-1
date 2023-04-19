@@ -19,18 +19,7 @@ jobs:
 
       - name: "Create website resources"
         run: |
-          mkdir -p "dist"
-          mkdir -p "tmp"
-          echo "{" > "tmp/userscripts.json"
-          cd src
-          for script in $(find * | grep -E ".user.js$"); do mkdir -p "../dist/$(dirname "${script}")"; cp -f "${script}" "../dist/${script}"; echo "\"${script}\":"; content="$(cat "${script}" | perl -ape 's/\r//g;' | grep -ozP '(?s)// ==UserScript==\n\K.*?(?=\n// ==/UserScript==)' 2>/dev/null | perl -ape 's{^// @([^\s+]*)\s*(.*?)$}{  [\"$1\",\"$2\"],}' | tr -d '\0'; echo "")"; echo "["; echo "${content}"; echo "[\"type\",\"script\"]],"; done >> "../tmp/userscripts.json"
-          for script in $(find * | grep -E ".user.css$"); do mkdir -p "../dist/$(dirname "${script}")"; cp -f "${script}" "../dist/${script}"; echo "\"${script}\":"; content="$(cat "${script}"  | perl -ape 's/\r//g;' | grep -ozP '(?s)/* ==UserStyle==\n\K.*?(?=\n==/UserStyle==)' 2>/dev/null | perl -ape 's{^@([^\s+]*)\s*(.*?)$}{  [\"$1\",\"$2\"],}' | tr -d '\0'; echo "")"; echo "["; echo "${content}"; echo "[\"type\",\"style\"]],"; done >> "../tmp/userscripts.json"
-          cd ..
-          echo "\"\": null}" >> "tmp/userscripts.json"
-          echo "{\"version\":\"${{ env.GITHUB_SHA_SHORT }}\"}" > dist/version.json
-          cat "tmp/userscripts.json" | jq -c "" | perl -ape 's{,null]}{]}g; s/,"":null}/}/g;' > "dist/userscripts.json"
-          cp -f "website/index.html" "website/userscripts.js" "dist/"
-          
+          ./manage.sh make_dist -v "${{ env.GITHUB_SHA_SHORT }}"
 
       - name: "Deploy to GitHub Pages"
         if: "success()"

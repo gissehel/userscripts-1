@@ -32,6 +32,7 @@ help() {
     echo "    createcss DIRNAME SCRIPTNAME     create a new userstyle name SCRIPTNAME in DIRNAME"
     echo "    config                           configure the tool"
     echo "    make_dist                        create a distribution dir"
+    echo "    clean_dist                       clean distribution dir"
     echo ""
     echo "  OPTIONS"
     echo "    -a, --author AUTHOR              use AUTHOR for author name"
@@ -124,6 +125,12 @@ make_dist() {
     cp -f "website/index.html" "website/userscripts.js" "${dist_dir}/"
 }
 
+clean_dist() {
+    dist_dir="${this_dir}/dist"
+    tmp_dir="${this_dir}/tmp"
+    rm -rf "${dist_dir}" "${tmp_dir}"
+}
+
 config() {
     if [ "${author_explicit}" == "0" ]
     then
@@ -181,6 +188,10 @@ do
 
         make_dist)
             action="make_dist"
+            ;;
+            
+        clean_dist)
+            action="clean_dist"
             ;;
             
         config)
