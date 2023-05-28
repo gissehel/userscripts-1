@@ -123,6 +123,7 @@ make_dist() {
     echo "{\"version\":\"${version}\"}" > "${dist_dir}/version.json"
     cat "${tmp_dir}/userscripts.json" | jq -c "" | perl -ape 's{,null]}{]}g; s/,"":null}/}/g;' > "${dist_dir}/userscripts.json"
     cp -f "website/index.html" "website/userscripts.js" "${dist_dir}/"
+    touch "${dist_dir}/.nojekyll"
 }
 
 clean_dist() {
