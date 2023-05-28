@@ -1,6 +1,7 @@
 name: "publish"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -11,19 +12,30 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Set env vars"
         run: |
-          echo "GITHUB_SHA_SHORT=$(echo ${GITHUB_SHA} | cut -c1-8)" >> "${GITHUB_ENV}"
+          export_ga() {
+            for _name in "${@}"
+            do
+              local _key="${_name%%=*}"
+              local _value="${_name#*=}"
+              [ "${_key}" == "${_name}" ] && _value="${!_name}"
+              export $_key="${_value}"
+              echo "${_key}=${_value}" >> "${GITHUB_ENV}"
+            done
+          }
+
+          export_ga GITHUB_SHA_SHORT="$(git rev-parse --short HEAD)"
 
       - name: "Create website resources"
         run: |
-          ./manage.sh make_dist -v "${{ env.GITHUB_SHA_SHORT }}"
+          bash ./manage.sh make_dist -v "${{ env.GITHUB_SHA_SHORT }}"
 
       - name: "Deploy to GitHub Pages"
         if: "success()"
-        uses: "crazy-max/ghaction-github-pages@v2"
+        uses: "crazy-max/ghaction-github-pages@v3.1.0"
         with:
           target_branch: "gh-pages"
           build_dir: "dist"
