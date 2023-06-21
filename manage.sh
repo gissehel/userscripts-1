@@ -28,7 +28,7 @@ help() {
     echo ""
     echo "  ACTIONS:"
     echo ""
-    echo "    create DIRNAME SCRIPTNAME        create a new userscript name SCRIPTNAME in DIRNAME"
+    echo "    createjs DIRNAME SCRIPTNAME      create a new userscript name SCRIPTNAME in DIRNAME"
     echo "    createcss DIRNAME SCRIPTNAME     create a new userstyle name SCRIPTNAME in DIRNAME"
     echo "    config                           configure the tool"
     echo "    make_dist                        create a distribution dir"
@@ -141,13 +141,13 @@ config() {
     fi
     if [ "${homepage_explicit}" == "0" ]
     then
-        read -p "Author ? [${homepage}] >" new_homepage
+        read -p "Homepage ? [${homepage}] >" new_homepage
         [ -n "${new_homepage}" ] && homepage="${new_homepage}"
         homepage_explicit="1"
     fi
     if [ "${support_explicit}" == "0" ]
     then
-        read -p "Author ? [${support}] >" new_support
+        read -p "Support page ? [${support}] >" new_support
         [ -n "${new_support}" ] && support="${new_support}"
         support_explicit="1"
     fi
@@ -157,13 +157,13 @@ config() {
 }
 
 
-param="${1}"
-shift
-
-while [ -n "${param}" ]
+while [ "${#}" -gt "0" ]
 do
+    param="${1}"
+    shift
+
     case "${param}" in
-        create)
+        createjs)
             [ -n "${1}" ] && [ -n "${2}" ] && {
                 action="create_script"
                 dirname="${1}"
@@ -228,8 +228,6 @@ do
             ;;
 
     esac
-    param="${1}"
-    shift
 done
 
 [ -n "${error}" ] && fail "${error}"
