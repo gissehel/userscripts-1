@@ -8,6 +8,7 @@
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://www.youtube.com/*
 // @match        https://youtube.com/*
+// @icon         https://www.youtube.com/s/desktop/0e9d1cf9/img/favicon.ico
 // @grant        none
 // ==/UserScript==
 
