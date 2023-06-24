@@ -1,1 +1,1 @@
-userscripts-manage/manage.sh
+userscripts-manager/manage.sh
