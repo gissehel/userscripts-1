@@ -1,17 +1,21 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.0.2
+// @version      1.1.0
 // @description  blitzortung-link-to-webgeo
-// @author       none
+// @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
+// @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://map.blitzortung.org/*
+// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
 // @grant        none
 // ==/UserScript==
 
 (() => {
-    'use strict';
-    console.log('blitzortung-link-to-webgeo start');
+    const script_name = GM_info?.script?.name || 'no-name'
+    const script_version = GM_info?.script?.version || 'no-version'
+    const script_id = `${script_name} ${script_version}`
+    console.log(`Begin - ${script_id}`)
 
     let allowChanges = true;
     let el = document.documentElement;
@@ -43,7 +47,7 @@
         const params = location.hash.substring(1).split('/')
         if (params.length > 0) {
             const [zoom, lat, lon] = params.map(x => Number(x))
-            const osmPosition = `map=${zoom+1}/${lat}/${lon}`;
+            const osmPosition = `map=${zoom + 1}/${lat}/${lon}`;
             realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
             realLink.click();
         }
@@ -54,5 +58,5 @@
     link.addEventListener('click', onGoToWebgeo, false);
     ondomchanged();
 
-    console.log('blitzortung-link-to-webgeo installed');
-})();
+    console.log(`End - ${script_id}`)
+})()

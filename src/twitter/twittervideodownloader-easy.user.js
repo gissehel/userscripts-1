@@ -1,19 +1,20 @@
 // ==UserScript==
 // @name         twittervideodownloader-easy
-// @namespace    http://tampermonkey.net/
-// @version      1.2.5
-// @description  twittervideodownloader.com easy
+// @namespace    https://github.com/gissehel/userscripts
+// @version      1.3.0
+// @description  twittervideodownloader-easy
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        http://twittervideodownloader.com/*
 // @match        https://twittervideodownloader.com/*
+// @icon         https://abs.twimg.com/favicons/twitter.2.ico
 // @grant        none
 // ==/UserScript==
 
 (() => {
-    const script_name = GM_info.script.name
-    const script_version = GM_info.script.version
+    const script_name = GM_info?.script?.name || 'no-name'
+    const script_version = GM_info?.script?.version || 'no-version'
     const script_id = `${script_name} ${script_version}`
     console.log(`Begin - ${script_id}`)
 

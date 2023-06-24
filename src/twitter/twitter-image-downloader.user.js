@@ -1,18 +1,19 @@
 // ==UserScript==
 // @name         twitter-image-downloader
-// @namespace    http://github.com/gissehel/userscripts
-// @version      1.4.10
-// @description  Twitter image/video downloader
+// @namespace    https://github.com/gissehel/userscripts
+// @version      1.5.0
+// @description  twitter-image-downloader
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://twitter.com/*
+// @icon         https://abs.twimg.com/favicons/twitter.2.ico
 // @grant        none
 // ==/UserScript==
 
 (() => {
-    const script_name = GM_info.script.name
-    const script_version = GM_info.script.version
+    const script_name = GM_info?.script?.name || 'no-name'
+    const script_version = GM_info?.script?.version || 'no-version'
     const script_id = `${script_name} ${script_version}`
     console.log(`Begin - ${script_id}`)
 
@@ -217,7 +218,7 @@
     el.addEventListener('DOMNodeInserted', ondomchanged, false);
     el.addEventListener('keydown', onKeyDown, false);
     ondomchanged();
-    
+
     window.ondomchanged = ondomchanged;
 
     console.log(`End - ${script_id}`)

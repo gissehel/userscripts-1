@@ -1,14 +1,17 @@
 /* ==UserStyle==
-@name           Twitter unlogged
+@name           twitter-unlogged
 @namespace      https://github.com/gissehel/userscripts
-@version        1.0.2
-@description    Twitter unlogged
+@version        1.1.0
+@description    twitter-unlogged
 @author         gissehel
+@icon           https://abs.twimg.com/favicons/twitter.2.ico
 ==/UserStyle== */
 
 @-moz-document domain("twitter.com") {
-  #layers>.r-1p0dtai,
-  #layers>.r-ipm5af {
+  #layers>.r-g6jmlv
+  ,#layers>.r-1p0dtai
+  /* ,#layers>.r-ipm5af */
+  {
     display: none !important;
   }
   html {

@@ -1,17 +1,21 @@
 // ==UserScript==
-// @name         Auto Zoom 1 for archives of cotesdarmor.fr
-// @namespace    http://github.com/gissehel/userscripts
+// @name         zoom1move-cotesdarmor
+// @namespace    https://github.com/gissehel/userscripts
 // @version      1.0
 // @description  Auto Zoom 1 + mouse = move
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
+// @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://sallevirtuelle.cotesdarmor.fr/EC/ecx/consult.aspx?*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=cotesdarmor.fr
 // @grant        none
 // ==/UserScript==
 
 (() => {
-    'use strict';
+    const script_name = GM_info?.script?.name || 'no-name'
+    const script_version = GM_info?.script?.version || 'no-version'
+    const script_id = `${script_name} ${script_version}`
+    console.log(`Begin - ${script_id}`)
 
     /**
      * A promise that is resolved when the html DOM is ready.
@@ -45,4 +49,5 @@
             ZoomerPhoto(1);
         })
 
-})();
+    console.log(`End - ${script_id}`)
+})()

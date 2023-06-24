@@ -1,18 +1,22 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
-// @namespace    http://github.com/gissehel/userscripts
-// @version      1.0.3
+// @namespace    https://github.com/gissehel/userscripts
+// @version      1.1.0
 // @description  googlemaps-link-to-webgeo
-// @author       none
+// @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
+// @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://google.com/maps/*
 // @match        https://www.google.com/maps/*
+// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
 // @grant        none
 // ==/UserScript==
 
 (() => {
-    'use strict';
-    console.log('googlemaps-link-to-webgeo start');
+    const script_name = GM_info?.script?.name || 'no-name'
+    const script_version = GM_info?.script?.version || 'no-version'
+    const script_id = `${script_name} ${script_version}`
+    console.log(`Begin - ${script_id}`)
 
     /**
      * Add a new css string to the page
@@ -47,11 +51,11 @@
     let allowChanges = true;
     let el = document.documentElement;
     const link = document.createElement('a');
-    link.setAttribute('href','#');
+    link.setAttribute('href', '#');
     link.textContent = 'W';
     const realLink = document.createElement('a');
-    realLink.setAttribute('href','#');
-    realLink.setAttribute('target','_blank');
+    realLink.setAttribute('href', '#');
+    realLink.setAttribute('target', '_blank');
 
     const ondomchanged = () => {
         if (allowChanges) {
@@ -65,7 +69,7 @@
                     link.className = `${className} webgeo`;
                     subpanel.insertBefore(link, firstLink);
 
-                    return ;
+                    return;
                 }
             }
             allowChanges = true;
@@ -75,7 +79,7 @@
     const onGoToWebgeo = () => {
         const googlePosition = document.URL.split('/').filter(part => part.startsWith('@'))[0];
         if (googlePosition) {
-            realLink.setAttribute('href',`https://webgiss.github.io/webgeo/#google=${googlePosition}`);
+            realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#google=${googlePosition}`);
             realLink.click();
             return true;
         }
@@ -88,5 +92,5 @@
     link.addEventListener('click', onGoToWebgeo, false);
     ondomchanged();
 
-    console.log('googlemaps-link-to-webgeo installed');
-})();
+    console.log(`End - ${script_id}`)
+})()
