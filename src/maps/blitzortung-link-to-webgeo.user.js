@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.1
+// @version      1.1.2
 // @description  blitzortung-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -146,6 +146,8 @@
     }
 
     registerDomNodeInsertedUnique(() => document.querySelectorAll('#MenuButtonDiv'), (menuBase) => {
+        /** @type{HTMLElement} */
+        let realLink = null
         createElementExtended('a', {
             attributes: {
                 href: '#',
@@ -159,7 +161,10 @@
                         href: '#',
                         target: '_blank',
                     },
-                })
+                    onCreated: (link) => {
+                        realLink = link
+                    },
+                }),
             ],
             onCreated: (link) => {
                 registerEventListener(link, 'click', (e) => {
@@ -169,8 +174,8 @@
                     if (params.length > 0) {
                         const [zoom, lat, lon] = params.map(x => Number(x))
                         const osmPosition = `map=${zoom + 1}/${lat}/${lon}`;
-                        realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-                        realLink.click();
+                        realLink?.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
+                        realLink?.click();
                     }
                     return true;
                 }, false);
