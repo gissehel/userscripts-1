@@ -12,6 +12,7 @@
  * @param {HTMLElement} params.prevSibling The previous sibling of the new element (to insert after)
  * @param {HTMLElement} params.nextSibling The next sibling of the new element (to insert before)
  * @param {(element:HTMLElement)=>{}} params.onCreated called when the element is fully created
+ * @returns {HTMLElement} The created element
  */
 const createElementExtended = (name, params) => {
     /** @type{HTMLElement} */

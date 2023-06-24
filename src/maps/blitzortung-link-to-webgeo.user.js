@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.2
+// @version      1.1.3
 // @description  blitzortung-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -101,6 +101,7 @@
      * @param {HTMLElement} params.prevSibling The previous sibling of the new element (to insert after)
      * @param {HTMLElement} params.nextSibling The next sibling of the new element (to insert before)
      * @param {(element:HTMLElement)=>{}} params.onCreated called when the element is fully created
+     * @returns {HTMLElement} The created element
      */
     const createElementExtended = (name, params) => {
         /** @type{HTMLElement} */
@@ -146,36 +147,30 @@
     }
 
     registerDomNodeInsertedUnique(() => document.querySelectorAll('#MenuButtonDiv'), (menuBase) => {
-        /** @type{HTMLElement} */
-        let realLink = null
+        const link = createElementExtended('a', {
+            attributes: {
+                href: '#',
+                target: '_blank',
+            },
+        })
+
         createElementExtended('a', {
             attributes: {
                 href: '#',
                 style: 'right: 88px;background-image: url(\'https://github.com/webgiss/webgeo/raw/master/res/earth-32.png\'); background-repeat: round; border-radius: 50px',
             },
-            parent: menuBase,
+            parent: menuBase.parentElement,
             classnames: ['MenuButtonDiv'],
-            children: [
-                createElementExtended('a', {
-                    attributes: {
-                        href: '#',
-                        target: '_blank',
-                    },
-                    onCreated: (link) => {
-                        realLink = link
-                    },
-                }),
-            ],
-            onCreated: (link) => {
-                registerEventListener(link, 'click', (e) => {
+            onCreated: (element) => {
+                registerEventListener(element, 'click', (e) => {
                     e.preventDefault();
 
                     const params = location.hash.substring(1).split('/')
                     if (params.length > 0) {
                         const [zoom, lat, lon] = params.map(x => Number(x))
                         const osmPosition = `map=${zoom + 1}/${lat}/${lon}`;
-                        realLink?.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-                        realLink?.click();
+                        link.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
+                        link.click();
                     }
                     return true;
                 }, false);
