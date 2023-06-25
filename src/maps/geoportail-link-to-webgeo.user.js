@@ -175,13 +175,8 @@
                                     const text = coords.textContent;
                                     const [lat, lon] = text.split(',').map((str) => str.replace(' ', ''))
                                     const element = document.querySelector('#numeric-scale')
-                                    let title = element?.getAttribute('title')
-                                    if (title === '') {
-                                        const event = new MouseEvent('mouseover')
-                                        element.dispatchEvent(event)
-                                        title = element?.getAttribute('title')
-                                    }
-                                    const zoom = title?.split('\n')?.filter(x => x.startsWith('Zoom : '))?.map(x => x.split(' : '))?.[0]?.[1] || 18
+                                    element.dispatchEvent(new MouseEvent('mouseover'))
+                                    const zoom = element?.getAttribute('title')?.split('\n')?.filter(x => x.startsWith('Zoom : '))?.map(x => x.split(' : '))?.[0]?.[1] || 18
                                     const osmPosition = `map=${zoom}/${lat}/${lon}`;
                                     realLink?.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
                                     realLink?.click();
