@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.0
+// @version      1.2.1
 // @description  googlemaps-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -195,7 +195,9 @@
         const subpanel = panel?.children?.[0];
         const firstLink = subpanel?.children?.[0];
         if (firstLink) {
-            firstLink.classList.add('webgeo');
+            const className = firstLink.className;
+            link.className = `${className} webgeo`;
+
             subpanel.insertBefore(link, firstLink);
 
             return false;
