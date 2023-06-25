@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nightcafe-add-hot-new-buttons
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.0
+// @version      1.2.0
 // @description Add buttons for 'Hot' and 'New' explorer entries
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -31,6 +31,7 @@
      * @param {HTMLElement} params.prevSibling The previous sibling of the new element (to insert after)
      * @param {HTMLElement} params.nextSibling The next sibling of the new element (to insert before)
      * @param {(element:HTMLElement)=>{}} params.onCreated called when the element is fully created
+     * @returns {HTMLElement} The created element
      */
     const createElementExtended = (name, params) => {
         /** @type{HTMLElement} */
@@ -76,7 +77,27 @@
     }
 
     /**
-     * Add a DOMNodeInserted on the document. Handle the fact that the callback can't be called while aleady being called (no stackoverflow). Use the register pattern thus return the unregister function as a result
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {string} eventType The event type
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     */
+    const registerEventListener = (eventTarget, eventType, callback, options) => {
+        if (eventTarget.addEventListener) {
+            eventTarget.addEventListener(eventType, callback, options);
+        }
+        return () => {
+            if (eventTarget.removeEventListener) {
+                eventTarget.removeEventListener(eventType, callback, options);
+            }
+        }
+    }
+
+    /**
+     * Add a DOMNodeInserted on the document. 
+     * Handle the fact that the callback can't be called while aleady being called (no stackoverflow). 
+     * Use the register pattern thus return the unregister function as a result
      * @param {EventListener} callback 
      * @return {()=>{}} The unregister function
      */
@@ -99,38 +120,53 @@
         }
     }
 
-    const explorerButtonSet = new Set()
+    /**
+     * Add a DOMNodeInserted on the document. 
+     * Handle the fact that the callback can't be called while aleady being called (no stackoverflow). 
+     * Use the register pattern thus return the unregister function as a result
+     * 
+     * Ensure that when an element matching the query elementProvider, the callback is called with the element 
+     * exactly once for each element
+     * @param {()=>[HTMLElement]} elementProvider 
+     * @param {(element: HTMLElement)=>{}} callback 
+     */
+    const registerDomNodeInsertedUnique = (elementProvider, callback) => {
+        const domNodesHandled = new Set()
 
-    const onNodeChanged = (() => {
-        const explorerButtons = [...document.querySelectorAll('[data-testid=ExploreBtn]')]
-        for (let explorerButton of explorerButtons) {
-            if (!explorerButtonSet.has(explorerButton)) {
-                const liExplorer = explorerButton.parentElement
-                createElementExtended('li', {
-                    children: [
-                        createElementExtended('a', {
-                            attributes: { 'href': '/explore?q=hottest' },
-                            text: 'Hot',
-                        })
-                    ],
-                    prevSibling: liExplorer
-                })
-                createElementExtended('li', {
-                    children: [
-                        createElementExtended('a', {
-                            attributes: { 'href': '/explore?q=new' },
-                            text: 'New',
-                        })
-                    ],
-                    prevSibling: liExplorer
-                })
-
-                explorerButtonSet.add(explorerButton)
+        return registerDomNodeInserted(() => {
+            for (let element of elementProvider()) {
+                if (!domNodesHandled.has(element)) {
+                    domNodesHandled.add(element)
+                    const result = callback(element)
+                    if (result === false) {
+                        domNodesHandled.delete(element)
+                    }
+                }
             }
-        }
-    })
+        })
+    }
 
-    registerDomNodeInserted(onNodeChanged)
+    registerDomNodeInsertedUnique(() => [...document.querySelectorAll('[data-testid=ExploreBtn]')], (explorerButton) => {
+        const liExplorer = explorerButton.parentElement
+        createElementExtended('li', {
+            children: [
+                createElementExtended('a', {
+                    attributes: { 'href': '/explore?q=hottest' },
+                    text: 'Hot',
+                })
+            ],
+            prevSibling: liExplorer
+        })
+        createElementExtended('li', {
+            children: [
+                createElementExtended('a', {
+                    attributes: { 'href': '/explore?q=new' },
+                    text: 'New',
+                })
+            ],
+            prevSibling: liExplorer
+        })
+    })
 
     console.log(`End - ${script_id}`)
 })()
