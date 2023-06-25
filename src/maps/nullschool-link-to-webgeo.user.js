@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nullschool-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.0
+// @version      1.2.1
 // @description  nullschool-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -147,33 +147,47 @@
         return element
     }
 
-    const link = createElementExtended('a', {
-        attributes: {
-            href: '#'
-        },
-        classnames: ['nav-link'],
+    const title = createElementExtended('h1', {
         children: [
-            createElementExtended('h1', {
-                parent: link,
-            }),
-            createElementExtended('button', {
+            createElementExtended('a', {
                 attributes: {
-                    class: 'card no-touch-tt',
-                    'data-name': 'webgeo',
-                    'aria-controls': 'menu',
-                    'aria-labelledby': 'webgeo webgeo-tt',
-                    'data-tooltip': 'webgeo-tt',
-                    title: 'Go to webgeo',
-                    'aria-expanded': 'true',
+                    href: '#'
                 },
-                parent: link,
+                classnames: ['nav-link'],
                 children: [
-                    createElementExtended('span', {
-                        text: 'WebGeo',
+                    createElementExtended('button', {
+                        attributes: {
+                            class: 'card no-touch-tt',
+                            'data-name': 'webgeo',
+                            'aria-controls': 'menu',
+                            'aria-labelledby': 'webgeo webgeo-tt',
+                            'data-tooltip': 'webgeo-tt',
+                            title: 'Go to webgeo',
+                            'aria-expanded': 'true',
+                        },
+                        children: [
+                            createElementExtended('span', {
+                                text: 'WebGeo',
+                            }),
+                        ],
                     }),
                 ],
-            }),
-        ],            
+                onCreated: (link) => {
+                    registerEventListener(link, 'click', (e) => {
+                        e.preventDefault();
+                        const locs = location.hash.split('/').filter(x => x.startsWith('loc='));
+                        if (locs.length > 0) {
+                            const loc = locs[0].substring('loc='.length)
+                            const [lon, lat] = loc.split(',').map(x => Number(x))
+                            const osmPosition = `map=${12}/${lat}/${lon}`;
+                            realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
+                            realLink.click();
+                        }
+                        return true;
+                    })
+                }
+            })
+        ],
     })
 
     const realLink = createElementExtended('a', {
@@ -186,24 +200,13 @@
     registerDomNodeInsertedUnique(() => document.querySelector('h1'), (titleBase) => {
         const parent = titleBase.parentElement;
         if (parent) {
-            parent.append(link);
+            parent.append(title);
             return true
         }
         return false
     })
 
-    registerEventListener(link, 'click', (e) => {
-        e.preventDefault();
-        const locs = location.hash.split('/').filter(x => x.startsWith('loc='));
-        if (locs.length > 0) {
-            const loc = locs[0].substring('loc='.length)
-            const [lon, lat] = loc.split(',').map(x => Number(x))
-            const osmPosition = `map=${12}/${lat}/${lon}`;
-            realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-            realLink.click();
-        }
-        return true;
-    })
+    
 
     console.log(`End - ${script_id}`)
 })()
