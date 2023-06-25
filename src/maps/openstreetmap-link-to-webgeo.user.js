@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         openstreetmap-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.1
+// @version      1.2.2
 // @description  openstreetmap-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -17,36 +17,6 @@
     const script_version = GM_info?.script?.version || 'no-version'
     const script_id = `${script_name} ${script_version}`
     console.log(`Begin - ${script_id}`)
-
-    /**
-     * Add a new css string to the page
-     *
-     * @param {string} styleText The CSS string to pass
-     * @returns {void}
-     */
-    const addStyle = (() => {
-        let styleElement = null;
-        let styleContent = null;
-
-        /**
-         * Add a new css string to the page
-         *
-         * @param {string} styleText The CSS string to pass
-         * @returns {void}
-         */
-        return (styleText) => {
-            if (styleElement === null) {
-                styleElement = document.createElement('style');
-                styleContent = "";
-                document.head.appendChild(styleElement);
-            } else {
-                styleContent += "\n";
-            }
-
-            styleContent += styleText;
-            styleElement.textContent = styleContent;
-        };
-    })();
 
     /**
      * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned
