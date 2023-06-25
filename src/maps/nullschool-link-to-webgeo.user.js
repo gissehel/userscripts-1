@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nullschool-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.1
+// @version      1.2.2
 // @description  nullschool-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -197,7 +197,7 @@
         },
     })
 
-    registerDomNodeInsertedUnique(() => document.querySelector('h1'), (titleBase) => {
+    registerDomNodeInsertedUnique(() => document.querySelectorAll('h1'), (titleBase) => {
         const parent = titleBase.parentElement;
         if (parent) {
             parent.append(title);
