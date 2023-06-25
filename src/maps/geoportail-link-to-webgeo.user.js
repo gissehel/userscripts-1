@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         geoportail-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.1
+// @version      1.2.2
 // @description  geoportail-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
