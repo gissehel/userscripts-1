@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         twitch-picture-in-picture
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.0
+// @version      1.2.0
 // @description  twitch-picture-in-picture
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -18,31 +18,156 @@
     const script_id = `${script_name} ${script_version}`
     console.log(`Begin - ${script_id}`)
 
-    const installer = () => {
-        const nav_menu = document.querySelector('.top-nav__prime')
-        // console.log({nav_menu, timer})
-        if (nav_menu !== null && timer !== null) {
-            clearInterval(timer)
-            timer = null
-            const pipNode = document.createElement('div')
-            pipNode.innerText = 'PiP'
-            nav_menu.parentElement.insertBefore(pipNode, nav_menu)
-            pipNode.style.fontWeight = 'bold'
-            pipNode.style.cursor = 'pointer'
-            // console.log({pipNode, nav_menu, timer})
-            pipNode.addEventListener('click', () => {
-                (
-                    [...document.getElementsByTagName('video')].reduce(
-                        (prev, current) => (prev.offsetHeight > current.offsetHeight) ? prev : current,
-                        {
-                            requestPictureInPicture: () => Promise.reject('No video found')
-                        }
-                    ).requestPictureInPicture()
-                ).catch(err => alert(err))
-            }, false)
+    /**
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {string} eventType The event type
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     */
+    const registerEventListener = (eventTarget, eventType, callback, options) => {
+        if (eventTarget.addEventListener) {
+            eventTarget.addEventListener(eventType, callback, options);
+        }
+        return () => {
+            if (eventTarget.removeEventListener) {
+                eventTarget.removeEventListener(eventType, callback, options);
+            }
         }
     }
-    let timer = setInterval(() => installer(), 1000)
+
+    /**
+     * Add a DOMNodeInserted on the document. 
+     * Handle the fact that the callback can't be called while aleady being called (no stackoverflow). 
+     * Use the register pattern thus return the unregister function as a result
+     * @param {EventListener} callback 
+     * @return {()=>{}} The unregister function
+     */
+    const registerDomNodeInserted = (callback) => {
+        let nodeChangeInProgress = false
+
+        /** @type{EventListener} */
+        const onNodeChanged = (e) => {
+            if (!nodeChangeInProgress) {
+                nodeChangeInProgress = true
+                callback(e)
+                nodeChangeInProgress = false
+            }
+
+        }
+        document.documentElement.addEventListener('DOMNodeInserted', onNodeChanged, false);
+        onNodeChanged()
+        return () => {
+            document.documentElement.removeEventListener('DOMNodeInserted', onNodeChanged, false);
+        }
+    }
+
+    /**
+     * Add a DOMNodeInserted on the document. 
+     * Handle the fact that the callback can't be called while aleady being called (no stackoverflow). 
+     * Use the register pattern thus return the unregister function as a result
+     * 
+     * Ensure that when an element matching the query elementProvider, the callback is called with the element 
+     * exactly once for each element
+     * @param {()=>[HTMLElement]} elementProvider 
+     * @param {(element: HTMLElement)=>{}} callback 
+     */
+    const registerDomNodeInsertedUnique = (elementProvider, callback) => {
+        const domNodesHandled = new Set()
+
+        return registerDomNodeInserted(() => {
+            for (let element of elementProvider()) {
+                if (!domNodesHandled.has(element)) {
+                    domNodesHandled.add(element)
+                    const result = callback(element)
+                    if (result === false) {
+                        domNodesHandled.delete(element)
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * Create a new element, and add some properties to it
+     * 
+     * @param {string} name The name of the element to create
+     * @param {object} params The parameters to tweek the new element
+     * @param {object.<string, string>} params.attributes The propeties of the new element
+     * @param {string} params.text The textContent of the new element
+     * @param {HTMLElement[]} params.children The children of the new element
+     * @param {HTMLElement} params.parent The parent of the new element
+     * @param {string[]} params.classnames The classnames of the new element
+     * @param {string} params.id The classnames of the new element
+     * @param {HTMLElement} params.prevSibling The previous sibling of the new element (to insert after)
+     * @param {HTMLElement} params.nextSibling The next sibling of the new element (to insert before)
+     * @param {(element:HTMLElement)=>{}} params.onCreated called when the element is fully created
+     * @returns {HTMLElement} The created element
+     */
+    const createElementExtended = (name, params) => {
+        /** @type{HTMLElement} */
+        const element = document.createElement(name)
+        if (!params) {
+            params = {}
+        }
+        const { attributes, text, children, parent, classnames, id, prevSibling, nextSibling, onCreated } = params
+        if (attributes) {
+            for (let attributeName in attributes) {
+                element.setAttribute(attributeName, attributes[attributeName])
+            }
+        }
+        if (text) {
+            element.textContent = text;
+        }
+        if (children) {
+            for (let child of children) {
+                element.appendChild(child)
+            }
+        }
+        if (parent) {
+            parent.appendChild(element)
+        }
+        if (classnames) {
+            for (let classname of classnames) {
+                element.classList.add(classname)
+            }
+        }
+        if (id) {
+            element.id = id
+        }
+        if (prevSibling) {
+            prevSibling.parentElement.insertBefore(element, prevSibling.nextSibling)
+        }
+        if (nextSibling) {
+            nextSibling.parentElement.insertBefore(element, nextSibling)
+        }
+        if (onCreated) {
+            onCreated(element)
+        }
+        return element
+    }
+
+    registerDomNodeInsertedUnique(() => document.querySelectorAll('.top-nav__prime'), (nav_menu) => {
+        createElementExtended('div', {
+            text: 'PiP',
+            classnames: ['pip-button'],
+            nextSibling: nav_menu,
+            onCreated: (pipNode) => {
+                pipNode.style.fontWeight = 'bold'
+                pipNode.style.cursor = 'pointer'
+                registerEventListener(pipNode, 'click', () => {
+                    (
+                        [...document.getElementsByTagName('video')].reduce(
+                            (prev, current) => (prev.offsetHeight > current.offsetHeight) ? prev : current,
+                            {
+                                requestPictureInPicture: () => Promise.reject('No video found')
+                            }
+                        ).requestPictureInPicture()
+                    ).catch(err => alert(err))
+                }, false)
+            }
+        })
+    })
 
     console.log(`End - ${script_id}`)
 })()
