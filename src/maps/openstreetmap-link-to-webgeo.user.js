@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         openstreetmap-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.0
+// @version      1.2.1
 // @description  openstreetmap-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -182,8 +182,8 @@
             createElementExtended('a', {
                 attributes: {
                     href: '#',
-                    text: 'WebGeo'
                 },
+                text: 'WebGeo',
                 classnames: ['nav-link'],
                 onCreated: (link) => {
                     registerEventListener(link, 'click', (e) => {
