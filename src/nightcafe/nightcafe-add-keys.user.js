@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nightcafe-add-keys
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.0
+// @version      1.2.1
 // @description Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -196,7 +196,7 @@
     })
 
     for (let [pattern, depth] of [["[href*='https://reddit.com/r/nightcafe']", 8], ["[style*='lounge-bg.jpg']", 3], ["[href*='/pricing#pro']", 2]]) {
-        registerDomNodeInsertedUnique(() => [...document.querySelectorAll(pattern)], (spamZone) => {
+        registerDomNodeInsertedUnique(() => document.querySelectorAll(pattern), (spamZone) => {
             const zoneToSuppress = parentsElement(spamZone, depth)
             if (zoneToSuppress && !zoneToSuppress.classList.contains('hidden-element')) {
                 zoneToSuppress.classList.add('hidden-element')
