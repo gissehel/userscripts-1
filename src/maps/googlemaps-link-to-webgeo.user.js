@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.2
+// @version      1.2.3
 // @description  googlemaps-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -219,19 +219,20 @@
                 classnames: [...firstLink.classList, 'webgeo'],
                 text: 'W',
                 nextSibling: firstLink,
+                onCreated: (link) => {
+                    registerClickListener(link, () => {
+                        const googlePosition = document.URL.split('/').filter(part => part.startsWith('@'))[0];
+                        if (googlePosition) {
+                            openLinkInNewTab(`https://webgiss.github.io/webgeo/#google=${googlePosition}`)
+                        }
+                        return false;
+                    })
+                }
             })
 
             return true
         }
         return false
-    })
-
-    registerClickListener(link, () => {
-        const googlePosition = document.URL.split('/').filter(part => part.startsWith('@'))[0];
-        if (googlePosition) {
-            openLinkInNewTab(`https://webgiss.github.io/webgeo/#google=${googlePosition}`)
-        }
-        return false;
     })
 
     addStyle('.webgeo { background-color: #fff; border-radius: 50px; padding: 9px !important; border: 1px solid #ccc; font-weight: bold; color: }')
