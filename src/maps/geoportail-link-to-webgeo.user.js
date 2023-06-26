@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         geoportail-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.2
+// @version      1.2.3
 // @description  geoportail-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -34,6 +34,24 @@
                 eventTarget.removeEventListener(eventType, callback, options);
             }
         }
+    }
+
+    /**
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned for click events
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     * @returns 
+     */
+    const registerClickListener = (eventTarget, callback, options) => {
+        return registerEventListener(eventTarget, 'click', (e) => {
+            e.preventDefault()
+            const result = callback(e)
+            if (result === false) {
+                return false
+            }
+            return true
+        }, options);
     }
 
     /**
@@ -147,12 +165,19 @@
         return element
     }
 
-    const realLink = createElementExtended('a', {
-        attributes: {
-            href: '#',
-            target: '_blank'
-        },
-    })
+    /**
+     * Open a link in a new tab
+     * @param {string} url 
+     */
+    const openLinkInNewTab = (url) => {
+        const link = createElementExtended('a', {
+            attributes: {
+                href: url,
+                target: '_blank',
+            },
+        })
+        link.click();
+    }
 
     registerDomNodeInsertedUnique(() => document.querySelectorAll('#reverse-geocoding-coords'), (coords) => {
         const parent = coords?.parentElement;
@@ -168,8 +193,7 @@
                         text: 'Link to WebGeo',
                         classnames: ['nav-link'],
                         onCreated: (link) => {
-                            registerEventListener(link, 'click', (e) => {
-                                e.preventDefault();
+                            registerClickListener(link, () => {
                                 const coords = document.querySelectorAll('#reverse-geocoding-coords')[0]
                                 if (coords) {
                                     const text = coords.textContent;
@@ -178,8 +202,7 @@
                                     element.dispatchEvent(new MouseEvent('mouseover'))
                                     const zoom = element?.getAttribute('title')?.split('\n')?.filter(x => x.startsWith('Zoom : '))?.map(x => x.split(' : '))?.[0]?.[1] || 18
                                     const osmPosition = `map=${zoom}/${lat}/${lon}`;
-                                    realLink?.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-                                    realLink?.click();
+                                    openLinkInNewTab(`https://webgiss.github.io/webgeo/#${osmPosition}`)
                                     return true;
                                 }
                                 return false;

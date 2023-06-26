@@ -37,6 +37,24 @@
     }
 
     /**
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned for click events
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     * @returns 
+     */
+    const registerClickListener = (eventTarget, callback, options) => {
+        return registerEventListener(eventTarget, 'click', (e) => {
+            e.preventDefault()
+            const result = callback(e)
+            if (result === false) {
+                return false
+            }
+            return true
+        }, options);
+    }
+
+    /**
      * Add a DOMNodeInserted on the document. 
      * Handle the fact that the callback can't be called while aleady being called (no stackoverflow). 
      * Use the register pattern thus return the unregister function as a result
@@ -147,6 +165,20 @@
         return element
     }
 
+    /**
+     * Open a link in a new tab
+     * @param {string} url 
+     */
+    const openLinkInNewTab = (url) => {
+        const link = createElementExtended('a', {
+            attributes: {
+                href: url,
+                target: '_blank',
+            },
+        })
+        link.click();
+    }
+
     const navLink = createElementExtended('li', {
         children: [
             createElementExtended('a', {
@@ -156,16 +188,14 @@
                 text: 'WebGeo',
                 classnames: ['nav-link'],
                 onCreated: (link) => {
-                    registerEventListener(link, 'click', (e) => {
-                        e.preventDefault();
+                    registerClickListener(link, () => {
                         const urlArgs = document.URL.split('#')[1];
                         let osmPosition = null;
                         if (urlArgs) {
                             osmPosition = urlArgs.split('&').filter(part => part.startsWith('map='));
                         }
                         if (osmPosition) {
-                            realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-                            realLink.click();
+                            openLinkInNewTab(`https://webgiss.github.io/webgeo/#${osmPosition}`);
                             return true;
                         }
                         return false;
@@ -173,13 +203,6 @@
                 },
             })
         ],
-    })
-
-    const realLink = createElementExtended('a', {
-        attributes: {
-            href: '#',
-            target: '_blank'
-        },
     })
 
     registerDomNodeInsertedUnique(() => document.querySelectorAll('nav.secondary'), (panel) => {

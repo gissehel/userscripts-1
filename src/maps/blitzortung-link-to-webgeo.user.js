@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.3
+// @version      1.1.4
 // @description  blitzortung-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -33,6 +33,24 @@
                 eventTarget.removeEventListener(eventType, callback, options);
             }
         }
+    }
+
+    /**
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned for click events
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     * @returns 
+     */
+    const registerClickListener = (eventTarget, callback, options) => {
+        return registerEventListener(eventTarget, 'click', (e) => {
+            e.preventDefault()
+            const result = callback(e)
+            if (result === false) {
+                return false
+            }
+            return true
+        }, options);
     }
 
     /**
@@ -146,14 +164,21 @@
         return element
     }
 
-    registerDomNodeInsertedUnique(() => document.querySelectorAll('#MenuButtonDiv'), (menuBase) => {
+    /**
+     * Open a link in a new tab
+     * @param {string} url 
+     */
+    const openLinkInNewTab = (url) => {
         const link = createElementExtended('a', {
             attributes: {
-                href: '#',
+                href: url,
                 target: '_blank',
             },
         })
+        link.click();
+    }
 
+    registerDomNodeInsertedUnique(() => document.querySelectorAll('#MenuButtonDiv'), (menuBase) => {
         createElementExtended('a', {
             attributes: {
                 href: '#',
@@ -162,15 +187,12 @@
             parent: menuBase.parentElement,
             classnames: ['MenuButtonDiv'],
             onCreated: (element) => {
-                registerEventListener(element, 'click', (e) => {
-                    e.preventDefault();
-
+                registerClickListener(element, () => {
                     const params = location.hash.substring(1).split('/')
                     if (params.length > 0) {
                         const [zoom, lat, lon] = params.map(x => Number(x))
                         const osmPosition = `map=${zoom + 1}/${lat}/${lon}`;
-                        link.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-                        link.click();
+                        openLinkInNewTab(`https://webgiss.github.io/webgeo/#${osmPosition}`)
                     }
                     return true;
                 }, false);

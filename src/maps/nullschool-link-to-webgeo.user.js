@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         nullschool-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.2
+// @version      1.2.3
 // @description  nullschool-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -34,6 +34,24 @@
                 eventTarget.removeEventListener(eventType, callback, options);
             }
         }
+    }
+
+    /**
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned for click events
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     * @returns 
+     */
+    const registerClickListener = (eventTarget, callback, options) => {
+        return registerEventListener(eventTarget, 'click', (e) => {
+            e.preventDefault()
+            const result = callback(e)
+            if (result === false) {
+                return false
+            }
+            return true
+        }, options);
     }
 
     /**
@@ -147,6 +165,20 @@
         return element
     }
 
+    /**
+     * Open a link in a new tab
+     * @param {string} url 
+     */
+    const openLinkInNewTab = (url) => {
+        const link = createElementExtended('a', {
+            attributes: {
+                href: url,
+                target: '_blank',
+            },
+        })
+        link.click();
+    }
+
     const title = createElementExtended('h1', {
         children: [
             createElementExtended('a', {
@@ -157,14 +189,14 @@
                 children: [
                     createElementExtended('button', {
                         attributes: {
-                            class: 'card no-touch-tt',
                             'data-name': 'webgeo',
                             'aria-controls': 'menu',
                             'aria-labelledby': 'webgeo webgeo-tt',
                             'data-tooltip': 'webgeo-tt',
-                            title: 'Go to webgeo',
+                            'title': 'Go to webgeo',
                             'aria-expanded': 'true',
                         },
+                        classnames: ['card','no-touch-tt'],
                         children: [
                             createElementExtended('span', {
                                 text: 'WebGeo',
@@ -173,28 +205,19 @@
                     }),
                 ],
                 onCreated: (link) => {
-                    registerEventListener(link, 'click', (e) => {
-                        e.preventDefault();
+                    registerClickListener(link, () => {
                         const locs = location.hash.split('/').filter(x => x.startsWith('loc='));
                         if (locs.length > 0) {
                             const loc = locs[0].substring('loc='.length)
                             const [lon, lat] = loc.split(',').map(x => Number(x))
-                            const osmPosition = `map=${12}/${lat}/${lon}`;
-                            realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#${osmPosition}`);
-                            realLink.click();
+                            const osmPosition = `map=${12}/${lat}/${lon}`
+                            openLinkInNewTab(`https://webgiss.github.io/webgeo/#${osmPosition}`)
                         }
-                        return true;
+                        return true
                     })
                 }
             })
         ],
-    })
-
-    const realLink = createElementExtended('a', {
-        attributes: {
-            href: '#',
-            target: '_blank',
-        },
     })
 
     registerDomNodeInsertedUnique(() => document.querySelectorAll('h1'), (titleBase) => {
@@ -205,8 +228,6 @@
         }
         return false
     })
-
-    
 
     console.log(`End - ${script_id}`)
 })()

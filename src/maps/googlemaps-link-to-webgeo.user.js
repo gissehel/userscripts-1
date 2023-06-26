@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.1
+// @version      1.2.2
 // @description  googlemaps-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -64,6 +64,24 @@
                 eventTarget.removeEventListener(eventType, callback, options);
             }
         }
+    }
+
+    /**
+     * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned for click events
+     * @param {EventTarget} eventTarget The object on which to register the event
+     * @param {EventListenerOrEventListenerObject} callback The callback to call when the event is triggered
+     * @param {boolean|AddEventListenerOptions=} options The options to pass to addEventListener
+     * @returns 
+     */
+    const registerClickListener = (eventTarget, callback, options) => {
+        return registerEventListener(eventTarget, 'click', (e) => {
+            e.preventDefault()
+            const result = callback(e)
+            if (result === false) {
+                return false
+            }
+            return true
+        }, options);
     }
 
     /**
@@ -177,39 +195,41 @@
         return element
     }
 
-    const link = createElementExtended('a', {
-        attributes: {
-            href: '#'
-        },
-        text: 'W',
-    })
-
-    const realLink = createElementExtended('a', {
-        attributes: {
-            href: '#',
-            target: '_blank'
-        }
-    })
+    /**
+     * Open a link in a new tab
+     * @param {string} url 
+     */
+    const openLinkInNewTab = (url) => {
+        const link = createElementExtended('a', {
+            attributes: {
+                href: url,
+                target: '_blank',
+            },
+        })
+        link.click();
+    }
 
     registerDomNodeInsertedUnique(() => document.querySelectorAll('[data-ogsr-up]'), (panel) => {
-        const subpanel = panel?.children?.[0];
-        const firstLink = subpanel?.children?.[0];
+        const firstLink = panel?.children?.[0]?.children?.[0];
         if (firstLink) {
-            const className = firstLink.className;
-            link.className = `${className} webgeo`;
+            createElementExtended('a', {
+                attributes: {
+                    href: '#'
+                },
+                classnames: [...firstLink.classList, 'webgeo'],
+                text: 'W',
+                nextSibling: firstLink,
+            })
 
-            subpanel.insertBefore(link, firstLink);
-
-            return false;
+            return true
         }
+        return false
     })
 
-    registerEventListener(link, 'click', (e) => {
-        e.preventDefault();
+    registerClickListener(link, () => {
         const googlePosition = document.URL.split('/').filter(part => part.startsWith('@'))[0];
         if (googlePosition) {
-            realLink.setAttribute('href', `https://webgiss.github.io/webgeo/#google=${googlePosition}`);
-            realLink.click();
+            openLinkInNewTab(`https://webgiss.github.io/webgeo/#google=${googlePosition}`)
         }
         return false;
     })
