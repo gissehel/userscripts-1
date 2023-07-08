@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         windy-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.0.0
+// @version      1.0.1
 // @description  windy-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://www.windy.com/*
 // @match        https://windy.com/*
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 

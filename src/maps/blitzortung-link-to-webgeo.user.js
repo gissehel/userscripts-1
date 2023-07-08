@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.5
+// @version      1.1.6
 // @description  blitzortung-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://map.blitzortung.org/*
-// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 

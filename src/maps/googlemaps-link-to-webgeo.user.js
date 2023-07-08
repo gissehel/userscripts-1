@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         googlemaps-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.5
+// @version      1.2.6
 // @description  googlemaps-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -10,7 +10,7 @@
 // @match        https://www.google.com/maps/*
 // @match        https://google.com/maps
 // @match        https://www.google.com/maps
-// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 

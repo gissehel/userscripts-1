@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         geoportail-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.4
+// @version      1.2.5
 // @description  geoportail-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://geoportail.gouv.fr/*
 // @match        https://www.geoportail.gouv.fr/*
-// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 

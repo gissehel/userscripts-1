@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         nullschool-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.3
+// @version      1.2.4
 // @description  nullschool-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://earth.nullschool.net/*
 // @match        https://classic.nullschool.net/*
-// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 

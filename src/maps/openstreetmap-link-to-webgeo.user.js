@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         openstreetmap-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.3
+// @version      1.2.4
 // @description  openstreetmap-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://openstreetmap.org/*
 // @match        https://www.openstreetmap.org/*
-// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 

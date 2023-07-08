@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         bingmaps-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.0.1
+// @version      1.0.2
 // @description  bingmaps-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://bing.com/maps
 // @match        https://www.bing.com/maps
-// @icon         https://github.com/webgiss/webgeo/raw/master/res/earth-64.png
+// @icon         https://webgiss.github.io/webgeo/earth-64.png
 // @grant        none
 // ==/UserScript==
 
