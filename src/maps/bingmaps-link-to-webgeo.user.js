@@ -224,7 +224,7 @@
                     children: [
                         createElementExtended('img', {
                             attributes: {
-                                src: 'https://webgiss.github.io/webgeo/earth.192e53ce.ico',
+                                src: 'https://webgiss.github.io/webgeo/earth-32.png',
                                 width: '32px',
                                 height: '32px',
                             },
