@@ -19,6 +19,36 @@
     console.log(`Begin - ${script_id}`)
 
     /**
+     * Add a new css string to the page
+     * 
+     * @param {string} styleText The CSS string to pass
+     * @returns {void}
+     */
+    const addStyle = (() => {
+        let styleElement = null;
+        let styleContent = null;
+
+        /**
+         * Add a new css string to the page
+         * 
+         * @param {string} styleText The CSS string to pass
+         * @returns {void}
+         */
+        return (styleText) => {
+            if (styleElement === null) {
+                styleElement = document.createElement('style');
+                styleContent = "";
+                document.head.appendChild(styleElement);
+            } else {
+                styleContent += "\n";
+            }
+
+            styleContent += styleText;
+            styleElement.textContent = styleContent;
+        };
+    })();
+
+    /**
      * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned
      * @param {EventTarget} eventTarget The object on which to register the event
      * @param {string} eventType The event type
@@ -198,6 +228,14 @@
                         },
                         classnames: ['card','no-touch-tt'],
                         children: [
+                            createElementExtended('img', {
+                                attributes: {
+                                    src: 'https://webgiss.github.io/webgeo/earth-16.png',
+                                    width: '16',
+                                    height: '16',
+                                },
+                                classnames: ['webgeo-icon'],
+                            }),
                             createElementExtended('span', {
                                 text: 'WebGeo',
                             }),
@@ -228,6 +266,8 @@
         }
         return false
     })
+
+    addStyle('.webgeo-icon { margin-right: 0.5em; }')
 
     console.log(`End - ${script_id}`)
 })()
