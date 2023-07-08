@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bingmaps-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.0.0
+// @version      1.0.1
 // @description  bingmaps-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
