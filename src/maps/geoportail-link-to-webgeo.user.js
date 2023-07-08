@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         geoportail-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.2.3
+// @version      1.2.4
 // @description  geoportail-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -17,6 +17,36 @@
     const script_version = GM_info?.script?.version || 'no-version'
     const script_id = `${script_name} ${script_version}`
     console.log(`Begin - ${script_id}`)
+
+    /**
+     * Add a new css string to the page
+     * 
+     * @param {string} styleText The CSS string to pass
+     * @returns {void}
+     */
+    const addStyle = (() => {
+        let styleElement = null;
+        let styleContent = null;
+
+        /**
+         * Add a new css string to the page
+         * 
+         * @param {string} styleText The CSS string to pass
+         * @returns {void}
+         */
+        return (styleText) => {
+            if (styleElement === null) {
+                styleElement = document.createElement('style');
+                styleContent = "";
+                document.head.appendChild(styleElement);
+            } else {
+                styleContent += "\n";
+            }
+
+            styleContent += styleText;
+            styleElement.textContent = styleContent;
+        };
+    })();
 
     /**
      * Wrap addEventListener and removeEventListener using a pattern where the unregister function is returned
@@ -190,7 +220,19 @@
                         attributes: {
                             href: '#'
                         },
-                        text: 'Link to WebGeo',
+                        children: [
+                            createElementExtended('img', {
+                                attributes: {
+                                    src: 'https://webgiss.github.io/webgeo/earth-16.png',
+                                    width: '16',
+                                    height: '16',
+                                },
+                                classnames: ['webgeo-icon'],
+                            }),
+                            createElementExtended('span', {
+                                text: 'Link to WebGeo',
+                            }),
+                        ],
                         classnames: ['nav-link'],
                         onCreated: (link) => {
                             registerClickListener(link, () => {
@@ -215,6 +257,8 @@
         }
         return false
     })
+
+    addStyle('.webgeo-icon { vertical-align: sub; margin-right: 3px; margin-top: 4px; }')
 
     console.log(`End - ${script_id}`)
 })()
