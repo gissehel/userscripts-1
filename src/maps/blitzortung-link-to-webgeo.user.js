@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         blitzortung-link-to-webgeo
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.4
+// @version      1.1.5
 // @description  blitzortung-link-to-webgeo
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -182,7 +182,7 @@
         createElementExtended('a', {
             attributes: {
                 href: '#',
-                style: 'right: 88px;background-image: url(\'https://github.com/webgiss/webgeo/raw/master/res/earth-32.png\'); background-repeat: round; border-radius: 50px',
+                style: 'right: 88px;background-image: url(\'https://webgiss.github.io/webgeo/earth-32.png\'); background-repeat: round; border-radius: 50px',
             },
             parent: menuBase.parentElement,
             classnames: ['MenuButtonDiv'],
