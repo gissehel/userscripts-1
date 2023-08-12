@@ -9,12 +9,12 @@ const bindOnClick = (element, callback) => {
     const onClick = (e) => {
         const result = callback()
         if (result !== false) {
-            e.preventDefault()
+            e.stopImmediatePropagation()
         }
     }
-    element.addEventListener('click', onClick, false);
+    element.addEventListener('click', onClick, true);
 
     return () => {
-        element.removeEventListener('click', onClick, false);
+        element.removeEventListener('click', onClick, true);
     }
 }

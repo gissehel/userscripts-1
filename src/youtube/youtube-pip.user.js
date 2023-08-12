@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         youtube-pip
 // @namespace    https://github.com/gissehel/userscripts
-// @version      0.0.1
+// @version      1.0.0
 // @description  youtube-pip
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
 // @supportURL   https://github.com/gissehel/userscripts/issues
 // @match        https://youtube.com/*
 // @match        https://www.youtube.com/*
+// @match        https://m.youtube.com/*
+// @icon         https://www.youtube.com/favicon.ico
 // @grant        none
 // ==/UserScript==
 
@@ -186,17 +188,22 @@
         const onClick = (e) => {
             const result = callback()
             if (result !== false) {
-                e.preventDefault()
+                e.stopImmediatePropagation()
             }
         }
-        element.addEventListener('click', onClick, false);
+        element.addEventListener('click', onClick, true);
 
         return () => {
-            element.removeEventListener('click', onClick, false);
+            element.removeEventListener('click', onClick, true);
         }
     }
 
-    registerDomNodeMutatedUnique(() => [...getElements('#buttons.ytd-masthead'), ...getElements('#actions-inner>#menu>ytd-menu-renderer'), ...getElements('.slim-video-action-bar-actions')], (buttons) => {
+    registerDomNodeMutatedUnique(() => [
+        ...getElements('#buttons.ytd-masthead'),
+        ...getElements('#actions-inner>#menu>ytd-menu-renderer'),
+        // ...getElements('.slim-video-action-bar-actions'),
+        ...getElements('ytm-slim-owner-renderer'),
+    ], (buttons) => {
         if (buttons && buttons.childElementCount >= 1) {
             const subbuttons = getSubElements(buttons, '.pip-text-button')
             if (subbuttons.length > 0) {
@@ -232,6 +239,7 @@
                                 if (video) {
                                     video.requestPictureInPicture()
                                 }
+                                return true
                             })
                         },
                     })
@@ -246,6 +254,9 @@
 
     addStyle(`.pip-text-button { width: 36px; height: 36px; text-align: center; alignment-baseline: middle; line-height: 36px; color: #0f0f0f; background-color: #f0f0f0; border-radius: 50%; font-weight: bold; margin-left: 5px; }`)
     addStyle(`.pip-link-button { text-decoration: none; }`)
+
+    // Disable stopping the video when tab changes
+    document.addEventListener("visibilitychange", (e) => { e.stopImmediatePropagation(); }, true);
 
     console.log(`End - ${script_id}`)
 })()
