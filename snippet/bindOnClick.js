@@ -9,6 +9,7 @@ const bindOnClick = (element, callback) => {
     const onClick = (e) => {
         const result = callback()
         if (result !== false) {
+            e.preventDefault()
             e.stopImmediatePropagation()
         }
     }

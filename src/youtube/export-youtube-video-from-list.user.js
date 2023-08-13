@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         export-youtube-video-from-list
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.1.0
+// @version      1.1.1
 // @description  Export youtube video information in markdown format
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -202,12 +202,13 @@
             const result = callback()
             if (result !== false) {
                 e.preventDefault()
+                e.stopImmediatePropagation()
             }
         }
-        element.addEventListener('click', onClick, false);
+        element.addEventListener('click', onClick, true);
 
         return () => {
-            element.removeEventListener('click', onClick, false);
+            element.removeEventListener('click', onClick, true);
         }
     }
 
@@ -235,7 +236,7 @@
                     // BUGFIX : Those may have changed, get latest values !
                     const videoTitle = getVideoTitle(richItemRenderer)
                     const videoLink = getVideoLink(richItemRenderer)
-          
+
                     if (preAction !== undefined) {
                         preAction()
                     }

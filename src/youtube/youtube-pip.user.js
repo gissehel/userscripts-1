@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         youtube-pip
 // @namespace    https://github.com/gissehel/userscripts
-// @version      1.0.1
+// @version      1.0.2
 // @description  youtube-pip
 // @author       gissehel
 // @homepage     https://github.com/gissehel/userscripts
@@ -188,6 +188,7 @@
         const onClick = (e) => {
             const result = callback()
             if (result !== false) {
+                e.preventDefault()
                 e.stopImmediatePropagation()
             }
         }
