@@ -1,0 +1,6 @@
+{
+    "match": [
+        "https://creator.nightcafe.studio/*"
+    ],
+    "icon" : "https://creator.nightcafe.studio/favicon-32x32.png"
+}

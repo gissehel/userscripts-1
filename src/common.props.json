@@ -1,0 +1,9 @@
+{
+    "namespace": "https://github.com/gissehel/userscripts",
+    "author": "gissehel",
+    "homepage": "https://github.com/gissehel/userscripts",
+    "supportURL": "https://github.com/gissehel/userscripts/issues",
+    "grant": [
+        "none"
+    ]
+}
