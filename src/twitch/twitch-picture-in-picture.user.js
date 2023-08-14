@@ -1,13 +1,14 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  twitch-picture-in-picture
 // ==/UserScript==
 
 // @import{registerEventListener}
 // @import{registerDomNodeInsertedUnique}
 // @import{createElementExtended}
+// @import{getElements}
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('.top-nav__prime'), (nav_menu) => {
+registerDomNodeInsertedUnique(() => getElements('.top-nav__prime'), (nav_menu) => {
     createElementExtended('div', {
         text: 'PiP',
         classnames: ['pip-button'],
@@ -17,7 +18,7 @@ registerDomNodeInsertedUnique(() => document.querySelectorAll('.top-nav__prime')
             pipNode.style.cursor = 'pointer'
             registerEventListener(pipNode, 'click', () => {
                 (
-                    [...document.getElementsByTagName('video')].reduce(
+                    getElements('video').reduce(
                         (prev, current) => (prev.offsetHeight > current.offsetHeight) ? prev : current,
                         {
                             requestPictureInPicture: () => Promise.reject('No video found')
