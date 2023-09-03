@@ -1,10 +1,11 @@
 // ==UserScript==
-// @version      1.0.0
+// @version      1.0.1
 // @description  Fix notion "set icon" that randomly don't set page icon to tab icon
 // ==/UserScript==
 
 // @import{registerDomNodeInsertedUnique}
 // @import{getSubElements}
+// @import{getElements}
 
 registerDomNodeInsertedUnique(() => getElements('.pseudoSelection>.notion-record-icon'), (icon_container) => {
     const hrefs = getSubElements(icon_container, 'img')
@@ -23,6 +24,6 @@ registerDomNodeInsertedUnique(() => getElements('.pseudoSelection>.notion-record
     const xicon = xicons[xicons.length - 1]
 
     xicon.setAttribute('href', href)
-    
+
     return true
 })
