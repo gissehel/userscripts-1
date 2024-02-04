@@ -1,0 +1,10 @@
+/* ==UserStyle==
+@version        1.0.0
+@description    duolingo-hide-noadblock.user
+==/UserStyle== */
+
+@-moz-document domain("duolingo.com") {
+    ._3bfsh {
+        display:none !important;    
+    }   
+}
