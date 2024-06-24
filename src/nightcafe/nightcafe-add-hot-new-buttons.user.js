@@ -1,12 +1,12 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  Add buttons for 'Hot' and 'New' explorer entries
 // ==/UserScript==
 
 // @import{createElementExtended}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 
-registerDomNodeInsertedUnique(() => [...document.querySelectorAll('[data-testid=ExploreBtn]')], (explorerButton) => {
+registerDomNodeMutatedUnique(() => [...document.querySelectorAll('[data-testid=ExploreBtn]')], (explorerButton) => {
     const liExplorer = explorerButton.parentElement
     createElementExtended('li', {
         children: [
