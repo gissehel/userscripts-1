@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  googlemaps-link-to-webgeo
 // @match        https://google.com/maps/*
 // @match        https://www.google.com/maps/*
@@ -9,11 +9,11 @@
 
 // @import{addStyle}
 // @import{registerClickListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('[data-ogsr-up]'), (panel) => {
+registerDomNodeMutatedUnique(() => document.querySelectorAll('[data-ogsr-up]'), (panel) => {
     const firstLink = panel?.children?.[0]?.children?.[0];
     if (firstLink) {
         createElementExtended('a', {

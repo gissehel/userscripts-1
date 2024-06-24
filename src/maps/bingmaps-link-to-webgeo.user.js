@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  bingmaps-link-to-webgeo
 // @match        https://bing.com/maps
 // @match        https://www.bing.com/maps
@@ -8,12 +8,12 @@
 // @import{addStyle}
 // @import{registerEventListener}
 // @import{registerClickListener}
-// @import{registerDomNodeInserted}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutated}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('.top-right.subcontrol-container'), (container) => {
+registerDomNodeMutatedUnique(() => document.querySelectorAll('.top-right.subcontrol-container'), (container) => {
     if (container.querySelectorAll('[aria-label="Pitch Control"]').length === 0) {
         return false
     }

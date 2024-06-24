@@ -1,14 +1,14 @@
 // ==UserScript==
-// @version      3.0.1
+// @version      3.0.2
 // @description  twitch-picture-in-picture
 // ==/UserScript==
 
 // @import{registerEventListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{getElements}
 
-registerDomNodeInsertedUnique(() => getElements('.top-nav__prime'), (nav_menu) => {
+registerDomNodeMutatedUnique(() => getElements('.top-nav__prime'), (nav_menu) => {
     createElementExtended('div', {
         text: 'PiP',
         classnames: ['pip-button'],

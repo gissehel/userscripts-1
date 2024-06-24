@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  nullschool-link-to-webgeo
 // @match        https://earth.nullschool.net/*
 // @match        https://classic.nullschool.net/*
@@ -7,7 +7,7 @@
 
 // @import{addStyle}
 // @import{registerClickListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
@@ -60,7 +60,7 @@ const title = createElementExtended('h1', {
     ],
 })
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('h1'), (titleBase) => {
+registerDomNodeMutatedUnique(() => document.querySelectorAll('h1'), (titleBase) => {
     const parent = titleBase.parentElement;
     if (parent) {
         parent.append(title);

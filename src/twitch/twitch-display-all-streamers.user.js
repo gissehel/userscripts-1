@@ -1,10 +1,10 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  Display all streamers followed in the side bar
 // ==/UserScript==
 
 // @import{addStyle}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{delay}
 
 const getFollowedChannelZone = () => {
@@ -31,7 +31,7 @@ const showAllChannels = async (followedChannelZone) => {
 
 const openAllChannels = async () => {
     return new Promise((resolve) => {
-        registerDomNodeInsertedUnique(() => [getFollowedChannelZone()], (followedChannelZone) => {
+        registerDomNodeMutatedUnique(() => [getFollowedChannelZone()], (followedChannelZone) => {
             console.log({ followedChannelZone })
             showAllChannels(followedChannelZone).then(() => resolve())
         })

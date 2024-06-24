@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  openstreetmap-link-to-webgeo
 // @match        https://openstreetmap.org/*
 // @match        https://www.openstreetmap.org/*
@@ -7,7 +7,7 @@
 
 // @import{addStyle}
 // @import{registerClickListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
@@ -49,7 +49,7 @@ const navLink = createElementExtended('li', {
     ],
 })
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('nav.secondary'), (panel) => {
+registerDomNodeMutatedUnique(() => document.querySelectorAll('nav.secondary'), (panel) => {
     const subpanel = panel.children[0];
     const firstLink = subpanel.children[0];
     if (firstLink) {

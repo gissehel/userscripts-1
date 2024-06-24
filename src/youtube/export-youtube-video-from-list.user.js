@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  Export youtube video information in markdown format
 // @match        https://www.youtube.com/*
 // @match        https://youtube.com/*
@@ -8,7 +8,7 @@
 // @import{getSubElements}
 // @import{getElements}
 // @import{addStyle}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{copyTextToClipboard}
 // @import{createElementExtended}
 // @import{bindOnClick}
@@ -21,7 +21,7 @@ const getVideoLink = (richItemRenderer) => getSubElements(richItemRenderer, '#vi
 
 let buffer = ''
 
-registerDomNodeInsertedUnique(() => getElements('ytd-rich-item-renderer'), (richItemRenderer) => {
+registerDomNodeMutatedUnique(() => getElements('ytd-rich-item-renderer'), (richItemRenderer) => {
     const videoTitle = getVideoTitle(richItemRenderer)
     const videoLink = getVideoLink(richItemRenderer)
     if ((videoTitle === undefined) || (videoLink === undefined) || (videoTitle === '') || (videoLink === '')) {

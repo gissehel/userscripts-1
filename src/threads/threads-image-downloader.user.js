@@ -1,12 +1,12 @@
 // ==UserScript==
-// @version      1.0.0
+// @version      1.0.1
 // @description  threads-image-downloader
 // ==/UserScript==
 
 // @import{createElementExtended}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 
-registerDomNodeInsertedUnique(() => [...document.querySelectorAll('.xrvdsqn.x87ps6o.x5yr21d > img')], (image) => {
+registerDomNodeMutatedUnique(() => [...document.querySelectorAll('.xrvdsqn.x87ps6o.x5yr21d > img')], (image) => {
     const parent = image.parentElement;
     if (parent.tagName === 'DIV') {
         console.log('tid-event-start');

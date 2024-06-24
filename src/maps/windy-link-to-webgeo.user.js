@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  windy-link-to-webgeo
 // @match        https://www.windy.com/*
 // @match        https://windy.com/*
@@ -7,11 +7,11 @@
 
 // @import{addStyle}
 // @import{registerClickListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
-registerDomNodeInsertedUnique(() => [...document.body.querySelectorAll('#overlay')], (overlay) => {
+registerDomNodeMutatedUnique(() => [...document.body.querySelectorAll('#overlay')], (overlay) => {
     const toggleOverlays = overlay.querySelector('[data-do=toggleOverlays]')
     if (!toggleOverlays) {
         return false

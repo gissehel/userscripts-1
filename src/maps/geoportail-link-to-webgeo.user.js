@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  geoportail-link-to-webgeo
 // @match        https://geoportail.gouv.fr/*
 // @match        https://www.geoportail.gouv.fr/*
@@ -7,11 +7,11 @@
 
 // @import{addStyle}
 // @import{registerClickListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('#reverse-geocoding-coords'), (coords) => {
+registerDomNodeMutatedUnique(() => document.querySelectorAll('#reverse-geocoding-coords'), (coords) => {
     const parent = coords?.parentElement;
     if (parent) {
         createElementExtended('div', {

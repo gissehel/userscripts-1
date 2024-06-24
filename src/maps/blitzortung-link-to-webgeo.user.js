@@ -1,16 +1,16 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  blitzortung-link-to-webgeo
 // @match        https://map.blitzortung.org/*
 // ==/UserScript==
 
 // @import{registerEventListener}
 // @import{registerClickListener}
-// @import{registerDomNodeInsertedUnique}
+// @import{registerDomNodeMutatedUnique}
 // @import{createElementExtended}
 // @import{openLinkInNewTab}
 
-registerDomNodeInsertedUnique(() => document.querySelectorAll('#MenuButtonDiv'), (menuBase) => {
+registerDomNodeMutatedUnique(() => document.querySelectorAll('#MenuButtonDiv'), (menuBase) => {
     createElementExtended('a', {
         attributes: {
             href: '#',
