@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.3
+// @version      3.0.4
 // @description  Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
 // ==/UserScript==
 
@@ -55,7 +55,7 @@ registerDomNodeMutated(onDomChanged)
 const unregisterLikeOrUnlike = registerKeyStruct({ key: 's', altKey: true }, likeOrUnlike);
 const unregisterShadeOrUnshadeLiked = registerKeyStruct({ key: 'f', altKey: true }, shadeOrUnshadeLiked);
 
-addStyle('html body { overflow: auto !important; }')
+addStyle('html, body { overflow: auto !important; }')
 addStyle('.shadeLiked .isLiked { opacity: 0.3; }')
 addStyle('.hidden-element { display: none !important; } ')
 addStyle('.isNotLiked .mdi-icon[width="28"] { width: 100px; height: 100px; }')
