@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.7
+// @version      3.0.8
 // @description  Add keys to nightcafe.studio. Alt+s : Like/Unlike ; Alt+f : Shade or Unshade the liked images
 // ==/UserScript==
 
@@ -50,16 +50,27 @@ const shadeOrUnshadeLiked = (e) => {
     e.preventDefault()
 }
 
+const minimiseOrUnminimiseLiked = (e) => {
+    if (document.body.classList.contains('minimiseLiked')) {
+        document.body.classList.remove('minimiseLiked')
+    } else {
+        document.body.classList.add('minimiseLiked')
+    }
+    e.preventDefault()
+}
+
 registerDomNodeMutated(onDomChanged)
 document.body.classList.add('shadeLiked')
 
 const unregisterLikeOrUnlike = registerKeyStruct({ key: 's', altKey: true }, likeOrUnlike);
 const unregisterShadeOrUnshadeLiked = registerKeyStruct({ key: 'f', altKey: true }, shadeOrUnshadeLiked);
+const unregisterMinimiseOrUnminimiseLiked = registerKeyStruct({ key: 'm', altKey: true }, minimiseOrUnminimiseLiked);
 
 addStyle('html, body { overflow: auto !important; }')
 addStyle('.css-l316jd { position: fixed !important; }')
 addStyle('.css-1s2cce1, .css-12ih86r, .css-7hfamk { margin-top: 60px; }')
 addStyle('.shadeLiked .isLiked { opacity: 0.3; }')
+addStyle('.minimiseLiked .isLiked { height: 10px; }')
 addStyle('.hidden-element { display: none !important; } ')
 addStyle('.isNotLiked .mdi-icon[width="28"] { width: 100px; height: 100px; }')
 addStyle('.isNotLiked .mdi-icon[width="30"] { display: none; }')
