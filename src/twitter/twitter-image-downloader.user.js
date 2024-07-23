@@ -1,7 +1,8 @@
 // ==UserScript==
-// @version      3.0.0
+// @version      3.0.1
 // @description  twitter-image-downloader
 // @match        https://twitter.com/*
+// @match        https://x.com/*
 // @icon         https://abs.twimg.com/favicons/twitter.2.ico
 // ==/UserScript==
 
