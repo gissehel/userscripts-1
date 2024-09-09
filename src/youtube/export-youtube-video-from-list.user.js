@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      3.0.1
+// @version      3.0.2
 // @description  Export youtube video information in markdown format
 // @match        https://www.youtube.com/*
 // @match        https://youtube.com/*
@@ -16,7 +16,7 @@
 addStyle('.eyvfl-export-button { width: 60px; height: 30px; position: absolute; bottom: 0px; right: 0px; }')
 addStyle('.eyvfl-export-button2 { width: 60px; height: 30px; position: absolute; bottom: 0px; right: 70px; }')
 
-const getVideoTitle = (richItemRenderer) => getSubElements(richItemRenderer, '[id=video-title]')[0]?.textContent
+const getVideoTitle = (richItemRenderer) => getSubElements(richItemRenderer, '[id=video-title]')?.map(x=>x.textContent)?.join(' ')?.trim()
 const getVideoLink = (richItemRenderer) => getSubElements(richItemRenderer, '#video-title-link')[0]?.href
 
 let buffer = ''
