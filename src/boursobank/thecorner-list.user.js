@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      1.0.1
+// @version      1.0.2
 // @description  thecorner-list
 // @match        https://clients.boursobank.com/thecorner/toutes-les-offres
 // ==/UserScript==
@@ -28,6 +28,11 @@ const isDeAInverval = (str) => str.startsWith('De ') && isAInverval(str.slice(3)
 const isJusquAInverval = (str) => (str.startsWith('Jusqu\'à ') || str.startsWith('Jusqu’à ')) && isNegPercentOnly(str.slice(8))
 
 const isEuroAmount = (str) => str.endsWith('€') && isSignedFrDecimal(str.slice(0,-1))
+
+const getInfluxString = (str) => `"${str.replaceAll('"', '\\"')}"`
+const getInfluxBoolean = (str) => `${str === true}`
+const getInfluxInteger = (str) => `${str}i`
+
 
 /**
  * Extracts additional information from a string that represents a negative percentage value.
@@ -123,16 +128,37 @@ registerDomNodeMutatedUnique(() => document.querySelectorAll('#marketplaceProduc
         ['id', 'name', 'description', 'CTA', 'tag', 'favorite'].join(';'),
         ...infos.items.map(({id, name, description, CTA, tag, favorite}) => `"${id}";"${name}";"${description}";"${CTA}";"${tag}";"${favorite}"`)
     ].join('\r\n')
+    const influx = [
+        ...infos.items.map(({id, name, description, CTA, tag, favorite, minRedux, maxRedux, amount}) => {
+            fields = {}
+            fields.id = getInfluxString(id)
+            fields.name = getInfluxString(name)
+            fields.description = getInfluxString(description)
+            fields.CTA = getInfluxString(CTA)
+            fields.tag = getInfluxString(tag)
+            fields.favorite = getInfluxBoolean(favorite)
+            if (minRedux) {
+                fields.minRedux = getInfluxInteger(minRedux)
+                fields.maxRedux = getInfluxInteger(maxRedux)
+            }
+            if (amount) {
+                fields.amount = getInfluxInteger(amount)
+            }
+            return `boursobank_thecorner ${Object.entries(fields).map(([k,v])=>`${k}=${v}`).join(',')} ${infos.date.unix*1000000000}`
+        })
+    ].join('\n')
 
     // infos.items.map(x=>x.CTA).filter(x=>!(isNegPercentOnly(x) || isAInverval(x) || isDeAInverval(x) || isJusquAInverval(x))).forEach(x=>console.log(x))
     infos.items.map(x=>x.CTA).forEach(x=>console.log(x, getExtraInfo(x)))
 
     downloadData(`thecorner-list-${dateid}.json`, json, { mimetype: 'application/json', encoding: 'utf-8' })
     downloadData(`thecorner-list-${dateid}.csv`, csv, { mimetype : 'text/csv', encoding: 'windows-1252' })
+    downloadData(`thecorner-list-${dateid}.influx`, influx, { mimetype : 'text/plain', encoding: 'utf-8' })
 
     console.log(infos)
     console.log(json)
     console.log(csv)
+    console.log(influx)
 
     return true
 })
