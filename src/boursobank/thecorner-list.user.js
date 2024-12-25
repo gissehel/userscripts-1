@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      1.0.2
+// @version      1.0.3
 // @description  thecorner-list
 // @match        https://clients.boursobank.com/thecorner/toutes-les-offres
 // ==/UserScript==
@@ -21,18 +21,18 @@ const isSignedFrDecimal = (str) => {
         return isFrDecimal(str)
     }
 }
-const getFrDecimalAsCents = (str) => parseFloat(str.replace(',', '.'))*100
+const getFrDecimalAsCents = (str) => Math.round(parseFloat(str.replace(',', '.')) * 100)
 const isNegPercentOnly = (str) => str.length >= 3 && str[0] === '-' && str[str.length - 1] === '%' && isNumOnly(str.slice(1, -1))
 const isAInverval = (str) => str.indexOf(' à ') > 0 && str.split(' à ').length === 2 && isNegPercentOnly(str.split(' à ')[0]) && isNegPercentOnly(str.split(' à ')[1])
 const isDeAInverval = (str) => str.startsWith('De ') && isAInverval(str.slice(3))
 const isJusquAInverval = (str) => (str.startsWith('Jusqu\'à ') || str.startsWith('Jusqu’à ')) && isNegPercentOnly(str.slice(8))
 
-const isEuroAmount = (str) => str.endsWith('€') && isSignedFrDecimal(str.slice(0,-1))
+const isEuroAmount = (str) => str.endsWith('€') && isSignedFrDecimal(str.slice(0, -1))
 
-const getInfluxString = (str) => `"${str.replaceAll('"', '\\"')}"`
+const getInfluxString = (str) => `"${str.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`
+const getInfluxStringTag = (str) => `${str.replaceAll('\\', '\\\\').replaceAll(' ', '\\ ').replaceAll('"', '\\"')}`
 const getInfluxBoolean = (str) => `${str === true}`
 const getInfluxInteger = (str) => `${str}i`
-
 
 /**
  * Extracts additional information from a string that represents a negative percentage value.
@@ -88,6 +88,35 @@ const getExtraInfo = (str) => {
     }
 }
 
+const get_influx_dict = (dict) => Object.entries(dict).map(([key, value]) => `${key}=${value}`).join(',')
+
+const get_influx_line = (infos, { id, name, description, CTA, tag, favorite }) => {
+    const { minRedux, maxRedux, amount } = getExtraInfo(CTA)
+
+    const fields = {}
+    const tags = {}
+    tags.id = getInfluxStringTag(id)
+    tags.name = getInfluxStringTag(name)
+    fields.description = getInfluxString(description)
+    fields.CTA = getInfluxString(CTA)
+    fields.tag = getInfluxString(tag)
+    fields.favorite = getInfluxBoolean(favorite)
+    if (minRedux) {
+        fields.minRedux = getInfluxInteger(minRedux)
+        fields.maxRedux = getInfluxInteger(maxRedux)
+    }
+    if (amount) {
+        fields.amount = getInfluxInteger(amount)
+    }
+    const metric = `boursobank_thecorner`
+    return `${metric},${get_influx_dict(tags)} ${get_influx_dict(fields)} ${infos.date.unix * 1000000000}`
+}
+
+const get_influx_content = (infos) => {
+    const lines = infos.items.map(item => get_influx_line(infos, item))
+    return lines.join('\n')
+}
+
 registerDomNodeMutatedUnique(() => document.querySelectorAll('#marketplaceProductList'), (container) => {
     const date = new Date()
     const dateiso = date.toISOString()
@@ -128,28 +157,7 @@ registerDomNodeMutatedUnique(() => document.querySelectorAll('#marketplaceProduc
         ['id', 'name', 'description', 'CTA', 'tag', 'favorite'].join(';'),
         ...infos.items.map(({id, name, description, CTA, tag, favorite}) => `"${id}";"${name}";"${description}";"${CTA}";"${tag}";"${favorite}"`)
     ].join('\r\n')
-    const influx = [
-        ...infos.items.map(({id, name, description, CTA, tag, favorite, minRedux, maxRedux, amount}) => {
-            fields = {}
-            fields.id = getInfluxString(id)
-            fields.name = getInfluxString(name)
-            fields.description = getInfluxString(description)
-            fields.CTA = getInfluxString(CTA)
-            fields.tag = getInfluxString(tag)
-            fields.favorite = getInfluxBoolean(favorite)
-            if (minRedux) {
-                fields.minRedux = getInfluxInteger(minRedux)
-                fields.maxRedux = getInfluxInteger(maxRedux)
-            }
-            if (amount) {
-                fields.amount = getInfluxInteger(amount)
-            }
-            return `boursobank_thecorner ${Object.entries(fields).map(([k,v])=>`${k}=${v}`).join(',')} ${infos.date.unix*1000000000}`
-        })
-    ].join('\n')
-
-    // infos.items.map(x=>x.CTA).filter(x=>!(isNegPercentOnly(x) || isAInverval(x) || isDeAInverval(x) || isJusquAInverval(x))).forEach(x=>console.log(x))
-    infos.items.map(x=>x.CTA).forEach(x=>console.log(x, getExtraInfo(x)))
+    const influx = get_influx_content(infos)
 
     downloadData(`thecorner-list-${dateid}.json`, json, { mimetype: 'application/json', encoding: 'utf-8' })
     downloadData(`thecorner-list-${dateid}.csv`, csv, { mimetype : 'text/csv', encoding: 'windows-1252' })
