@@ -1,5 +1,5 @@
 // ==UserScript==
-// @version      1.0.3
+// @version      1.0.4
 // @description  thecorner-list
 // @match        https://clients.boursobank.com/thecorner/toutes-les-offres
 // ==/UserScript==
@@ -77,7 +77,7 @@ const getExtraInfo = (str) => {
         }
     }
     if (isEuroAmount(str)) {
-        const value = -Math.abs(getFrDecimalAsCents(str.slice(0,-1)))
+        const value = getFrDecimalAsCents(str.slice(0,-1))
         return {
             amount: value,
             parsed: true
