@@ -1,0 +1,14 @@
+/* ==UserStyle==
+@name        dark-server-list
+@namespace   https://github.com/gissehel/userscripts
+@version     3.0.0
+@description dark-server-list
+@author      gissehel
+@homepage    https://github.com/gissehel/userscripts
+@supportURL  https://github.com/gissehel/userscripts/issues
+@grant       none
+==/UserStyle== */
+
+@-moz-document domain(discord.com) {
+    .scroller-3X7KbA { background-color: #6e6a7e }
+}
